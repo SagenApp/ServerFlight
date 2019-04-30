@@ -56,14 +56,14 @@ public class Graph {
         vertexHeuristics.put(start, 0d);
 
         Vertex current = start;
-        for(;;) {
+        for (; ; ) {
             double currentHeuristic = vertexHeuristics.get(current);
 
             // update heuristics of all non-visited neighbors
-            for(Vertex neighbor : adjVertices.get(current)) {
-                if(visited.contains(neighbor)) continue;
+            for (Vertex neighbor : adjVertices.get(current)) {
+                if (visited.contains(neighbor)) continue;
                 double neightborHeuristic = currentHeuristic + current.heristic(neighbor);
-                if(!vertexHeuristics.containsKey(neighbor)
+                if (!vertexHeuristics.containsKey(neighbor)
                         || vertexHeuristics.get(neighbor) > neightborHeuristic) {
                     vertexHeuristics.put(neighbor, neightborHeuristic);
                     vertexParent.put(neighbor, current);
@@ -74,12 +74,12 @@ public class Graph {
             visited.add(current);
 
             // check for completion
-            if(visited.contains(end)) {
+            if (visited.contains(end)) {
                 // we found a path
                 LinkedList<Vertex> vertices = new LinkedList<>();
                 Vertex cur = end;
                 vertices.add(end);
-                while(vertexParent.containsKey(cur)) {
+                while (vertexParent.containsKey(cur)) {
                     cur = vertexParent.get(cur);
                     vertices.add(cur);
                 }
@@ -96,7 +96,7 @@ public class Graph {
                         double h2 = vertexHeuristics.get(v2);
                         return Double.compare(h1, h2);
                     });
-            if(!min.isPresent()) {
+            if (!min.isPresent()) {
                 // no more nodes to visit
                 return Optional.empty();
             }
@@ -120,7 +120,8 @@ public class Graph {
         double y;
         double z;
 
-        private Vertex(){}
+        private Vertex() {
+        }
 
         public Vertex(String name, double x, double y, double z) {
             this.name = name;
