@@ -8,12 +8,14 @@ public class Vertex  {
     float x;
     float y;
     float z;
+    boolean teleportable;
 
-    public Vertex(String name, float x, float y, float z) {
+    public Vertex(String name, float x, float y, float z, boolean teleportable) {
         this.name = name;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.teleportable = teleportable;
     }
 
     public float heristic(Vertex vertex) {

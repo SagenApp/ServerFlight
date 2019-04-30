@@ -51,6 +51,8 @@ public class Graph {
     public Set<Vertex> allReachable(Vertex vertex) {
         Set<Vertex> reachable = new HashSet<>();
         allReachable(reachable, vertex);
+        reachable.remove(vertex);
+        System.out.println("All reachable vertices from " + vertex + " is " + reachable);
         return reachable;
     }
 

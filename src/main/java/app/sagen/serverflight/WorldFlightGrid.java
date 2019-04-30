@@ -27,8 +27,10 @@ public class WorldFlightGrid {
     public void setupFlightMovers() {
         HashMap<Vertex, List<FlightMover>> flightMovers = new HashMap<>();
         for(Vertex from : graph.getAdjVertices().keySet()) {
+            if(!from.isTeleportable()) continue; // ignore non-teleportable
             List<FlightMover> paths = new ArrayList<>();
             for(Vertex destination : graph.allReachable(from)) {
+                if(!destination.isTeleportable()) continue; // ignore non-teleportable
                 paths.add(new FlightMover(this, from, destination));
             }
             flightMovers.put(from, paths);
@@ -53,5 +55,14 @@ public class WorldFlightGrid {
 
     public List<FlightMover> getAllAvailableMoversFrom(Vertex vertex) {
         return flightMovers.getOrDefault(vertex, new ArrayList<>());
+    }
+
+    public void update() {
+        flightMovers.values().forEach(movers -> movers.forEach(FlightMover::update));
+    }
+
+    public void shutdown() {
+        flightMovers.values().forEach(movers -> movers.forEach(FlightMover::shutdown));
+        flightMovers.clear();
     }
 }

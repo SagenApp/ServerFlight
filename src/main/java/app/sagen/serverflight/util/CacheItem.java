@@ -1,5 +1,8 @@
 package app.sagen.serverflight.util;
 
+import lombok.Data;
+
+@Data
 public class CacheItem {
     float position;
     float xpos, ypos, zpos;

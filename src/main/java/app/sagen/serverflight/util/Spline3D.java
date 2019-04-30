@@ -1,8 +1,11 @@
 package app.sagen.serverflight.util;
 
+import lombok.Data;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class Spline3D {
     private final int count;
     private final Cubic[] x, y, z;
@@ -179,6 +182,9 @@ public class Spline3D {
 
         this.travelCache = new ArrayList<>();
         this.travelCache.add(new CacheItem(x, y, z));
+
+
+        this.getTripPosition(50000); // force full caching
     }
 
     private CacheItem getSteppingPosition(float posOffset, float travel, float segmentStep) {
