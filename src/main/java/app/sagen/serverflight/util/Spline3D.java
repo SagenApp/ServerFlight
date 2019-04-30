@@ -105,6 +105,10 @@ public class Spline3D {
         result[2] = z[ti].eval(tf);
     }
 
+    public float getTotalTripDistance() {
+        return travelCache.get(travelCache.size() - 1).getTravelled();
+    }
+
     public float[] getTripPosition(float totalTrip) {
         CacheItem last = this.travelCache.get(this.travelCache.size() - 1);
 

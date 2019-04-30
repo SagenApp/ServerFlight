@@ -72,6 +72,7 @@ public class ServerFlight extends JavaPlugin {
             worldFlightGrid.setupFlightMovers();
 
             World world = Bukkit.getWorld(worldFlightGrid.getWorld());
+            world.getBlockAt((int)middle.getX(), (int)middle.getY(), (int)middle.getZ()).setType(Material.BEACON);
             world.getBlockAt((int)northDown.getX(), (int)northDown.getY(), (int)northDown.getZ()).setType(Material.BEACON);
             world.getBlockAt((int)southDown.getX(), (int)southDown.getY(), (int)southDown.getZ()).setType(Material.BEACON);
             world.getBlockAt((int)eastDown.getX(), (int)eastDown.getY(), (int)eastDown.getZ()).setType(Material.BEACON);
@@ -81,6 +82,9 @@ public class ServerFlight extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new FlightListener(), this);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-                () -> worldFlightGrids.values().forEach(WorldFlightGrid::update), 5, 5);
+                () -> worldFlightGrids.values().forEach(WorldFlightGrid::update), 1, 1);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this,
+                () -> worldFlightGrids.values().forEach(WorldFlightGrid::updateParticles), 5, 5);
+
     }
 }

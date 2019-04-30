@@ -1,6 +1,6 @@
 package app.sagen.serverflight.listener;
 
-import app.sagen.serverflight.FlightMover;
+import app.sagen.serverflight.FlightPath;
 import app.sagen.serverflight.ServerFlight;
 import app.sagen.serverflight.WorldFlightGrid;
 import app.sagen.serverflight.util.Vertex;
@@ -35,20 +35,22 @@ public class FlightListener implements Listener {
             return;
         }
 
-        List<FlightMover> availableMovers = worldFlightGrid.getAllAvailableMoversFrom(closesVertex.get());
+        List<FlightPath> availableMovers = worldFlightGrid.getAllAvailableMoversFrom(closesVertex.get());
         if(availableMovers.isEmpty()) {
             p.sendMessage("No available flights from this point!");
             return;
         }
 
         p.sendMessage("** All available destinations **");
-        for(FlightMover flightMover : availableMovers) {
-            p.sendMessage(" - " + flightMover.getTo().toString());
+        for(FlightPath flightPath : availableMovers) {
+            p.sendMessage(" - " + flightPath.getTo().toString());
         }
         p.sendMessage("**");
 
-        FlightMover flightMover = availableMovers.get(ThreadLocalRandom.current().nextInt(availableMovers.size() - 1));
-        flightMover.addPlayer(p);
+        FlightPath flightPath = availableMovers.get(ThreadLocalRandom.current().nextInt(availableMovers.size() - 1));
+        flightPath.addPlayer(p);
+
+        e.setCancelled(true);
     }
 
 }

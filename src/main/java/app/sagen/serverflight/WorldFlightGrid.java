@@ -15,7 +15,7 @@ public class WorldFlightGrid {
     private String world;
     private Graph graph;
 
-    private HashMap<Vertex, List<FlightMover>> flightMovers = new HashMap<>();
+    private HashMap<Vertex, List<FlightPath>> flightMovers = new HashMap<>();
 
     public WorldFlightGrid(String world, Graph graph) {
         this.world = world;
@@ -25,13 +25,13 @@ public class WorldFlightGrid {
     }
 
     public void setupFlightMovers() {
-        HashMap<Vertex, List<FlightMover>> flightMovers = new HashMap<>();
+        HashMap<Vertex, List<FlightPath>> flightMovers = new HashMap<>();
         for(Vertex from : graph.getAdjVertices().keySet()) {
             if(!from.isTeleportable()) continue; // ignore non-teleportable
-            List<FlightMover> paths = new ArrayList<>();
+            List<FlightPath> paths = new ArrayList<>();
             for(Vertex destination : graph.allReachable(from)) {
                 if(!destination.isTeleportable()) continue; // ignore non-teleportable
-                paths.add(new FlightMover(this, from, destination));
+                paths.add(new FlightPath(this, from, destination));
             }
             flightMovers.put(from, paths);
         }
@@ -53,16 +53,20 @@ public class WorldFlightGrid {
         return Optional.of(closest);
     }
 
-    public List<FlightMover> getAllAvailableMoversFrom(Vertex vertex) {
+    public List<FlightPath> getAllAvailableMoversFrom(Vertex vertex) {
         return flightMovers.getOrDefault(vertex, new ArrayList<>());
     }
 
     public void update() {
-        flightMovers.values().forEach(movers -> movers.forEach(FlightMover::update));
+        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::update));
+    }
+
+    public void updateParticles() {
+        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::updateParticles));
     }
 
     public void shutdown() {
-        flightMovers.values().forEach(movers -> movers.forEach(FlightMover::shutdown));
+        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::shutdown));
         flightMovers.clear();
     }
 }
