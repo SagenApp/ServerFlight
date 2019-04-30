@@ -1,0 +1,5 @@
+name: "${project.artifactId}"
+version: "${project.version}"
+main: app.sagen.serverflight.ServerFlight
+author: Sagen
+api-version: "1.13"
