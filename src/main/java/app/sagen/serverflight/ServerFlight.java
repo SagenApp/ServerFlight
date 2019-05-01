@@ -48,6 +48,9 @@ public class ServerFlight extends JavaPlugin {
             //Vertex westUp = new Vertex("West-Up", 0, 150, -50);
             Vertex westDown = new Vertex("West-Down", 0.5f, 100.5f, -50.5f, true);
 
+
+            Vertex northWestDown = new Vertex("NorthWest-Down", 50.5f, 100.5f, -50.5f, true);
+
             graph.addVertex(middle);
             //graph.addVertex(northUp);
             graph.addVertex(northDown);
@@ -58,6 +61,8 @@ public class ServerFlight extends JavaPlugin {
             //graph.addVertex(westUp);
             graph.addVertex(westDown);
 
+            graph.addVertex(northWestDown);
+
             //graph.addEdge(middle, northUp);
             graph.addEdge(middle, northDown);
             //graph.addEdge(middle, southUp);
@@ -66,6 +71,10 @@ public class ServerFlight extends JavaPlugin {
             graph.addEdge(middle, eastDown);
             //graph.addEdge(middle, westUp);
             graph.addEdge(middle, westDown);
+
+            graph.addEdge(northDown, northWestDown);
+            graph.addEdge(westDown, northWestDown);
+            graph.addEdge(middle, northWestDown);
 
             // set grid and recalculate
             worldFlightGrid.setGraph(graph);

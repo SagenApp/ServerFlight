@@ -76,6 +76,7 @@ public class FlightPath {
     }
 
     public void updateParticles(){
+        if(playerMovers.size() == 0) return;
         // walk through the path
         float position = 0f;
         float maxPosition = spline3D.getTotalTripDistance();

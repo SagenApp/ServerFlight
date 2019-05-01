@@ -28,6 +28,8 @@ public class FlightListener implements Listener {
                 || block == null
                 || !block.getType().equals(Material.BEACON)) return;
 
+        e.setCancelled(true);
+
         WorldFlightGrid worldFlightGrid = ServerFlight.getInstance().getWorldFlightGrids().get(block.getWorld().getName());
         Optional<Vertex> closesVertex = worldFlightGrid.getClosesVertex(block.getX(), block.getY(), block.getZ(), 10);
         if(!closesVertex.isPresent()) {
@@ -49,8 +51,6 @@ public class FlightListener implements Listener {
 
         FlightPath flightPath = availableMovers.get(ThreadLocalRandom.current().nextInt(availableMovers.size() - 1));
         flightPath.addPlayer(p);
-
-        e.setCancelled(true);
     }
 
 }
