@@ -2,6 +2,7 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
+import app.sagen.serverflight.util.VirtualArmourStand;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Getter;
@@ -105,9 +106,10 @@ public class FlightPath {
 
     private class PlayerMover {
         private Player player;
-        private Entity entity;
+        //private Entity entity;
         private float distanceTraveled;
         private float[] currentPosition = null;
+        private VirtualArmourStand virtualArmourStand;
 
         public PlayerMover(Player player) {
             this.player = player;
@@ -120,31 +122,35 @@ public class FlightPath {
             currentPosition = spline3D.getPositionAt(9000); // end
 
             Location location = getCurrentLocation();
+            virtualArmourStand.setLocation(location);
+            virtualArmourStand.destroy();
 
-            if(entity != null) {
-                entity.remove();
-                entity = null;
-                Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> player.teleport(location),1);
-            }
+            //if(entity != null) {
+            //    entity.remove();
+            //    entity = null;
+                Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> player.teleport(location),5);
+            //}
         }
 
         public boolean update() {
             if(distanceTraveled > spline3D.getTotalTripDistance() + 1f) return true; // reached end
-            distanceTraveled += 0.5f;
+            distanceTraveled += 0.8f;
             currentPosition = spline3D.getTripPosition(distanceTraveled);
 
             Location location = getCurrentLocation();
 
             // fix dead entity
-            if(entity == null || entity.isDead()) {
-                entity = createArmourStand(location, player);
-            }
+            //if(entity == null || entity.isDead()) {
+            //    entity = createArmourStand(location, player);
+            //}
             // fix player
-            if (player.getVehicle() == null) {
-                entity.addPassenger(player);
-            }
+            //if (player.getVehicle() == null) {
+            //    entity.addPassenger(player);
+            //}
 
-            moveEntity(entity, location.getX(), location.getY(), location.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
+            virtualArmourStand.setLocation(location);
+
+            //moveEntity(entity, location.getX(), location.getY(), location.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
 
             // update currentPosition and move player / entity
 
@@ -156,11 +162,14 @@ public class FlightPath {
 
             Location location = getCurrentLocation();
 
+            this.virtualArmourStand = new VirtualArmourStand(location, player);
             player.teleport(location);
+
+            Bukkit.getOnlinePlayers().forEach(virtualArmourStand::showFor);
 
             // teleport player to start and start flight
 
-            entity = createArmourStand(location, player);
+            //entity = createArmourStand(location, player);
         }
 
         private Location getCurrentLocation() {
