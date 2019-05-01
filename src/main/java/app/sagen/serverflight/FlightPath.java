@@ -95,7 +95,7 @@ public class FlightPath {
                 break;
             }
 
-            position += 6f;
+            position += 1f;
         }
     }
 
