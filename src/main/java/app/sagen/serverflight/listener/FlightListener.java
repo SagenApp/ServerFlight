@@ -4,6 +4,7 @@ import app.sagen.serverflight.FlightPath;
 import app.sagen.serverflight.ServerFlight;
 import app.sagen.serverflight.FlightGraph;
 import app.sagen.serverflight.WorldController;
+import app.sagen.serverflight.menu.FlightMenu;
 import app.sagen.serverflight.util.Vertex;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -41,10 +42,6 @@ public class FlightListener implements Listener {
         }
 
         List<FlightPath> availableMovers = flightGraph.getAllAvailableMoversFrom(closesVertex.get());
-        if (availableMovers.isEmpty()) {
-            p.sendMessage("No available flights from this point!");
-            return;
-        }
 
         int radius = 2;
         List<FlightPath> cleanPaths = new LinkedList<>();
@@ -68,14 +65,17 @@ public class FlightListener implements Listener {
             }
         }
 
-        p.sendMessage("** All available destinations **");
-        for (FlightPath flightPath : cleanPaths) {
-            p.sendMessage(" - " + flightPath.getTo().toString());
+        if (cleanPaths.isEmpty()) {
+            p.sendMessage("No available flights from this point!");
+            return;
         }
-        p.sendMessage("**");
 
-        FlightPath flightPath = cleanPaths.get(ThreadLocalRandom.current().nextInt(cleanPaths.size()));
-        flightPath.addPlayer(p);
+        if(cleanPaths.size() == 1) {
+            cleanPaths.get(0).addPlayer(e.getPlayer());
+            return;
+        }
+
+        FlightMenu flightMenu = new FlightMenu("Select a destination", 9, ServerFlight.getInstance(), cleanPaths);
+        flightMenu.show(e.getPlayer());
     }
-
 }

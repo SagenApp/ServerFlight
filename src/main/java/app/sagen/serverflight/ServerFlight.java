@@ -2,6 +2,7 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.command.FlightAdminCommand;
 import app.sagen.serverflight.listener.FlightListener;
+import app.sagen.serverflight.listener.InventoryListener;
 import app.sagen.serverflight.listener.PlayerListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -32,6 +33,7 @@ public class ServerFlight extends JavaPlugin {
 
         Bukkit.getPluginManager().registerEvents(new FlightListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new InventoryListener(), this);
 
         new FlightAdminCommand();
 

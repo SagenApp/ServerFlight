@@ -108,9 +108,9 @@ public class VirtualVehicle {
     }
 
     private void sendPacket(Packet packet, Player... players) {
-        System.out.println("Sending packet " + packet.getClass().getName() + " to players " + players);
-        for (Player player : players)
+        for (Player player : players) {
             ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        }
     }
 
 }
