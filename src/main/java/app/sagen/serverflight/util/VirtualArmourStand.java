@@ -23,7 +23,7 @@ public class VirtualArmourStand {
     PacketPlayOutSpawnEntityLiving packetPlayOutSpawnEntityLiving;
     PacketPlayOutEntityTeleport packetPlayOutEntityTeleport;
     PacketPlayOutEntityDestroy packetPlayOutEntityDestroy;
-    PacketPlayOutAttachEntity packetPlayOutAttachEntity;
+    PacketPlayOutMount packetPlayOutMount;
 
     Set<UUID> visibleFor = new HashSet<>();
 
@@ -34,7 +34,7 @@ public class VirtualArmourStand {
         entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), 0);
         entity.setNoGravity(true);
         entity.setInvulnerable(true);
-        //entity.setInvisible(true);
+        entity.setInvisible(true);
         entity.setSilent(true);
         entity.setSmall(true);
         entity.setArms(false);
@@ -69,7 +69,7 @@ public class VirtualArmourStand {
         packetPlayOutSpawnEntityLiving = null;
         packetPlayOutEntityTeleport = null;
         packetPlayOutEntityDestroy = null;
-        packetPlayOutAttachEntity = null;
+        packetPlayOutMount = null;
         visibleFor.clear();
     }
 
@@ -79,13 +79,15 @@ public class VirtualArmourStand {
         packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving(entity);
         packetPlayOutEntityTeleport = new PacketPlayOutEntityTeleport(entity);
         packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(entityId);
-        packetPlayOutAttachEntity = new PacketPlayOutAttachEntity(((CraftPlayer) rider).getHandle(), entity);
+
+        packetPlayOutMount = new PacketPlayOutMount(entity);
+
         updateLocationForAll();
     }
 
     private void spawnFor(Player...players) {
         sendPacket(packetPlayOutSpawnEntityLiving, players);
-        sendPacket(packetPlayOutAttachEntity, players);
+        sendPacket(packetPlayOutMount, players);
     }
 
     private void updateLocationForAll() {
@@ -96,7 +98,6 @@ public class VirtualArmourStand {
                 continue;
             }
             sendPacket(packetPlayOutEntityTeleport, player);
-            sendPacket(packetPlayOutAttachEntity, player);
         }
     }
 

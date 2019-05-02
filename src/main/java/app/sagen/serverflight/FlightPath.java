@@ -115,13 +115,16 @@ public class FlightPath {
 
         public void shutdown() {
             // teleport player to end and cleanup
-            currentPosition = spline3D.getPositionAt(9000); // end
-
-            Location location = getCurrentLocation();
-            virtualArmourStand.setLocation(location);
             virtualArmourStand.destroy();
+            virtualArmourStand = null;
 
-            Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> player.teleport(location),5);
+            currentPosition = spline3D.getPositionAt(9000); // end
+            Location location = getCurrentLocation();
+
+            Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> {
+                player.teleport(location);
+                player = null;
+            },2);
         }
 
         public boolean update() {
