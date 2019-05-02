@@ -3,13 +3,10 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
 import app.sagen.serverflight.util.VirtualArmourStand;
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Getter;
 import org.bukkit.*;
 import org.bukkit.entity.*;
 
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
@@ -106,7 +103,6 @@ public class FlightPath {
 
     private class PlayerMover {
         private Player player;
-        //private Entity entity;
         private float distanceTraveled;
         private float[] currentPosition = null;
         private VirtualArmourStand virtualArmourStand;
@@ -125,11 +121,7 @@ public class FlightPath {
             virtualArmourStand.setLocation(location);
             virtualArmourStand.destroy();
 
-            //if(entity != null) {
-            //    entity.remove();
-            //    entity = null;
-                Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> player.teleport(location),5);
-            //}
+            Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> player.teleport(location),5);
         }
 
         public boolean update() {
@@ -139,20 +131,7 @@ public class FlightPath {
 
             Location location = getCurrentLocation();
 
-            // fix dead entity
-            //if(entity == null || entity.isDead()) {
-            //    entity = createArmourStand(location, player);
-            //}
-            // fix player
-            //if (player.getVehicle() == null) {
-            //    entity.addPassenger(player);
-            //}
-
             virtualArmourStand.setLocation(location);
-
-            //moveEntity(entity, location.getX(), location.getY(), location.getZ(), player.getLocation().getYaw(), player.getLocation().getPitch());
-
-            // update currentPosition and move player / entity
 
             return false;
         }
@@ -166,10 +145,6 @@ public class FlightPath {
             player.teleport(location);
 
             Bukkit.getOnlinePlayers().forEach(virtualArmourStand::showFor);
-
-            // teleport player to start and start flight
-
-            //entity = createArmourStand(location, player);
         }
 
         private Location getCurrentLocation() {
@@ -182,57 +157,4 @@ public class FlightPath {
                     player.getLocation().getPitch());
         }
     }
-
-    @Getter(AccessLevel.NONE)
-    private static Method[] moveEntityReflection = null;
-
-    private static Method[] getMoveEntityReflection() {
-        if (moveEntityReflection == null) {
-            try {
-                Method getHandle = Class.forName(Bukkit.getServer().getClass().getPackage().getName() + ".entity.CraftEntity").getDeclaredMethod("getHandle");
-                moveEntityReflection = new Method[]{
-                        getHandle,
-                        getHandle.getReturnType().getDeclaredMethod("setPositionRotation",
-                                double.class,
-                                double.class,
-                                double.class,
-                                float.class,
-                                float.class)};
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-        }
-
-        return moveEntityReflection;
-    }
-
-    private static void moveEntity(Entity entity, double x, double y, double z) {
-        moveEntity(entity, x, y, z, entity.getLocation().getYaw(), entity.getLocation().getPitch());
-    }
-
-    private static void moveEntity(Entity entity, double x, double y, double z, float yaw, float pitch) {
-        try {
-            getMoveEntityReflection()[1].invoke(moveEntityReflection[0].invoke(entity), x, y, z, yaw, pitch);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private static Entity createArmourStand(Location location, Player player) {
-        LivingEntity entity = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
-
-        entity.addPassenger(player);
-        entity.setInvulnerable(true);
-        entity.setAI(false);
-        entity.setGliding(false);
-        entity.setGravity(false);
-
-        ArmorStand as = (ArmorStand) entity;
-        as.setVisible(false);
-        as.setSmall(true);
-        as.setMarker(true);
-
-        return entity;
-    }
-
 }
