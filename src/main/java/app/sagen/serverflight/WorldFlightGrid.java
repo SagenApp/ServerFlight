@@ -15,7 +15,8 @@ public class WorldFlightGrid {
     private String world;
     private Graph graph;
 
-    private HashMap<Vertex, List<FlightPath>> flightMovers = new HashMap<>();
+    // flightpaths from a vertex
+    private HashMap<Vertex, List<FlightPath>> flightPaths = new HashMap<>();
 
     public WorldFlightGrid(String world, Graph graph) {
         this.world = world;
@@ -25,48 +26,52 @@ public class WorldFlightGrid {
     }
 
     public void setupFlightMovers() {
+        // calculate new FlightPats
         HashMap<Vertex, List<FlightPath>> flightMovers = new HashMap<>();
-        for(Vertex from : graph.getAdjVertices().keySet()) {
-            if(!from.isTeleportable()) continue; // ignore non-teleportable
+        for (Vertex from : graph.getAdjVertices().keySet()) {
+            if (!from.isTeleportable()) continue; // ignore non-teleportable
             List<FlightPath> paths = new ArrayList<>();
-            for(Vertex destination : graph.allReachable(from)) {
-                if(!destination.isTeleportable()) continue; // ignore non-teleportable
+            for (Vertex destination : graph.allReachable(from)) {
+                if (!destination.isTeleportable()) continue; // ignore non-teleportable
                 paths.add(new FlightPath(this, from, destination));
             }
             flightMovers.put(from, paths);
         }
-        this.flightMovers = flightMovers;
+
+        // cleanup old and setup new
+        if (!flightMovers.isEmpty()) shutdown();
+        this.flightPaths = flightMovers;
     }
 
     public Optional<Vertex> getClosesVertex(float x, float y, float z, float maxDistance) {
         Vertex closest = null;
         float heuristics = Float.MAX_VALUE;
-        for(Vertex vertex : graph.getAdjVertices().keySet()) {
-            if(closest == null) closest = vertex;
+        for (Vertex vertex : graph.getAdjVertices().keySet()) {
+            if (closest == null) closest = vertex;
             float calculatedHeuristics = vertex.heristic(x, y, z);
-            if(calculatedHeuristics < heuristics) {
+            if (calculatedHeuristics < heuristics) {
                 closest = vertex;
                 heuristics = calculatedHeuristics;
             }
         }
-        if(heuristics > maxDistance || closest == null) return Optional.empty();
+        if (heuristics > maxDistance || closest == null) return Optional.empty();
         return Optional.of(closest);
     }
 
     public List<FlightPath> getAllAvailableMoversFrom(Vertex vertex) {
-        return flightMovers.getOrDefault(vertex, new ArrayList<>());
+        return flightPaths.getOrDefault(vertex, new ArrayList<>());
     }
 
     public void update() {
-        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::update));
+        flightPaths.values().forEach(paths -> paths.forEach(FlightPath::update));
     }
 
     public void updateParticles() {
-        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::updateParticles));
+        flightPaths.values().forEach(paths -> paths.forEach(FlightPath::updateParticles));
     }
 
     public void shutdown() {
-        flightMovers.values().forEach(movers -> movers.forEach(FlightPath::shutdown));
-        flightMovers.clear();
+        flightPaths.values().forEach(paths -> paths.forEach(FlightPath::shutdown));
+        flightPaths.clear();
     }
 }

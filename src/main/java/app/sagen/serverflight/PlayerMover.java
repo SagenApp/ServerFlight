@@ -1,10 +1,12 @@
 package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.VirtualVehicle;
+import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+@Data
 public class PlayerMover {
     private FlightPath flightPath;
     private Player player;
@@ -24,18 +26,18 @@ public class PlayerMover {
         virtualArmourStand.destroy();
         virtualArmourStand = null;
 
-        currentPosition = flightPath.spline3D.getPositionAt(9000); // end
+        currentPosition = flightPath.spline3D.getTripPosition(9000);
         Location location = getCurrentLocation();
 
         // teleport now and later to be sure
         player.teleport(location);
         Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> {
             player = null;
-        },2);
+        }, 2);
     }
 
     public boolean update() {
-        if(distanceTraveled > flightPath.spline3D.getTotalTripDistance() + 1f) return true; // reached end
+        if (distanceTraveled > flightPath.spline3D.getTotalTripDistance() + 1f) return true; // reached end
         distanceTraveled += 0.8f;
         currentPosition = flightPath.spline3D.getTripPosition(distanceTraveled);
 

@@ -35,7 +35,7 @@ public class ServerFlight extends JavaPlugin {
                 .forEach(w -> worldFlightGrids.put(w, new WorldFlightGrid(w, new Graph())));
 
         // create test grid
-        for(WorldFlightGrid worldFlightGrid : worldFlightGrids.values()) {
+        for (WorldFlightGrid worldFlightGrid : worldFlightGrids.values()) {
             Graph graph = new Graph();
 
             Vertex middle = new Vertex("Middle", 0.5f, 125.5f, 0.5f, false);
@@ -81,11 +81,11 @@ public class ServerFlight extends JavaPlugin {
             worldFlightGrid.setupFlightMovers();
 
             World world = Bukkit.getWorld(worldFlightGrid.getWorld());
-            world.getBlockAt((int)middle.getX(), (int)middle.getY(), (int)middle.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int)northDown.getX(), (int)northDown.getY(), (int)northDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int)southDown.getX(), (int)southDown.getY(), (int)southDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int)eastDown.getX(), (int)eastDown.getY(), (int)eastDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int)westDown.getX(), (int)westDown.getY(), (int)westDown.getZ()).setType(Material.BEACON);
+            world.getBlockAt((int) middle.getX(), (int) middle.getY(), (int) middle.getZ()).setType(Material.BEACON);
+            world.getBlockAt((int) northDown.getX(), (int) northDown.getY(), (int) northDown.getZ()).setType(Material.BEACON);
+            world.getBlockAt((int) southDown.getX(), (int) southDown.getY(), (int) southDown.getZ()).setType(Material.BEACON);
+            world.getBlockAt((int) eastDown.getX(), (int) eastDown.getY(), (int) eastDown.getZ()).setType(Material.BEACON);
+            world.getBlockAt((int) westDown.getX(), (int) westDown.getY(), (int) westDown.getZ()).setType(Material.BEACON);
         }
 
         Bukkit.getPluginManager().registerEvents(new FlightListener(), this);

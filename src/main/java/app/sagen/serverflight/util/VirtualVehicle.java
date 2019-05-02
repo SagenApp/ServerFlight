@@ -31,7 +31,7 @@ public class VirtualVehicle {
     Set<UUID> shownFor = new HashSet<>();
 
     public VirtualVehicle(Location location, Player rider) {
-        WorldServer worldServer = ((CraftWorld)location.getWorld()).getHandle();
+        WorldServer worldServer = ((CraftWorld) location.getWorld()).getHandle();
         this.rider = rider;
         entity = new EntityArmorStand(EntityTypes.ARMOR_STAND, worldServer);
         entity.setNoGravity(true);
@@ -41,14 +41,14 @@ public class VirtualVehicle {
         entity.setSmall(true);
         entity.setArms(false);
         entity.setBasePlate(false);
-        entity.passengers.add(((CraftPlayer)rider).getHandle());
+        entity.passengers.add(((CraftPlayer) rider).getHandle());
 
         entityId = entity.getId();
         setLocation(location);
     }
 
     public void showFor(Player player) {
-        if(visibleFor.contains(player.getUniqueId())) return;
+        if (visibleFor.contains(player.getUniqueId())) return;
         this.visibleFor.add(player.getUniqueId());
         spawnFor(player);
     }
@@ -59,9 +59,9 @@ public class VirtualVehicle {
     }
 
     public void destroy() {
-        for(UUID uuid : visibleFor) {
+        for (UUID uuid : visibleFor) {
             Player player = Bukkit.getPlayer(uuid);
-            if(player == null) {
+            if (player == null) {
                 visibleFor.remove(uuid);
                 continue;
             }
@@ -87,15 +87,15 @@ public class VirtualVehicle {
         updateLocationForAll();
     }
 
-    private void spawnFor(Player...players) {
+    private void spawnFor(Player... players) {
         sendPacket(packetPlayOutSpawnEntityLiving, players);
         sendPacket(packetPlayOutMount, players);
     }
 
     private void updateLocationForAll() {
-        for(UUID uuid : visibleFor) {
+        for (UUID uuid : visibleFor) {
             Player player = Bukkit.getPlayer(uuid);
-            if(player == null) {
+            if (player == null) {
                 visibleFor.remove(uuid);
                 continue;
             }
@@ -103,14 +103,14 @@ public class VirtualVehicle {
         }
     }
 
-    private void destroyFor(Player...players) {
+    private void destroyFor(Player... players) {
         sendPacket(packetPlayOutEntityDestroy, players);
     }
 
-    private void sendPacket(Packet packet, Player...players) {
+    private void sendPacket(Packet packet, Player... players) {
         System.out.println("Sending packet " + packet.getClass().getName() + " to players " + players);
-        for(Player player : players)
-            ((CraftPlayer)player).getHandle().playerConnection.sendPacket(packet);
+        for (Player player : players)
+            ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
     }
 
 }

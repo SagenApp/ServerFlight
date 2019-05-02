@@ -114,8 +114,8 @@ public class Graph {
     }
 
     private void allReachable(Set<Vertex> vertices, Vertex vertex) {
-        for(Vertex neighbor : adjVertices.get(vertex)) {
-            if(!vertices.contains(neighbor)) {
+        for (Vertex neighbor : adjVertices.get(vertex)) {
+            if (!vertices.contains(neighbor)) {
                 vertices.add(neighbor);
                 allReachable(vertices, neighbor);
             }

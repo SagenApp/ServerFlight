@@ -24,7 +24,7 @@ public class FlightListener implements Listener {
         Block block = e.getClickedBlock();
         Player p = e.getPlayer();
 
-        if(!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
+        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)
                 || block == null
                 || !block.getType().equals(Material.BEACON)) return;
 
@@ -32,19 +32,19 @@ public class FlightListener implements Listener {
 
         WorldFlightGrid worldFlightGrid = ServerFlight.getInstance().getWorldFlightGrids().get(block.getWorld().getName());
         Optional<Vertex> closesVertex = worldFlightGrid.getClosesVertex(block.getX(), block.getY(), block.getZ(), 10);
-        if(!closesVertex.isPresent()) {
+        if (!closesVertex.isPresent()) {
             p.sendMessage("No nearby flightpath!");
             return;
         }
 
         List<FlightPath> availableMovers = worldFlightGrid.getAllAvailableMoversFrom(closesVertex.get());
-        if(availableMovers.isEmpty()) {
+        if (availableMovers.isEmpty()) {
             p.sendMessage("No available flights from this point!");
             return;
         }
 
         p.sendMessage("** All available destinations **");
-        for(FlightPath flightPath : availableMovers) {
+        for (FlightPath flightPath : availableMovers) {
             p.sendMessage(" - " + flightPath.getTo().toString());
         }
         p.sendMessage("**");
