@@ -81,7 +81,7 @@ public abstract class AbstractCommand implements TabExecutor {
     }
 
     public void sendMessage(CommandSender sender, String message) {
-        sender.sendMessage("§2§lFA &f" + message);
+        sender.sendMessage("§2§lFA §f" + message);
     }
 
     public abstract void handle(CommandSender sender, Command command, String label, String[] args);

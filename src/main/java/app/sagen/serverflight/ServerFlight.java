@@ -1,6 +1,8 @@
 package app.sagen.serverflight;
 
+import app.sagen.serverflight.command.FlightAdminCommand;
 import app.sagen.serverflight.listener.FlightListener;
+import app.sagen.serverflight.listener.PlayerListener;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -13,7 +15,7 @@ public class ServerFlight extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        WorldController.get().getWorldFlightGrids().values().forEach(FlightGraph::shutdown);
+        WorldController.get().shutdown();
     }
 
     @Override
@@ -26,9 +28,12 @@ public class ServerFlight extends JavaPlugin {
                 .forEach(WorldController.get()::getGraphInWorld);
 
         // create test grid
-        WorldController.get().createTestGrid();
+        // WorldController.get().createTestGrid();
 
         Bukkit.getPluginManager().registerEvents(new FlightListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+
+        new FlightAdminCommand();
 
         // update every FlightPath every tick
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,
