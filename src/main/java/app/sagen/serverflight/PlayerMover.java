@@ -23,15 +23,17 @@ public class PlayerMover {
 
     public void shutdown() {
         // teleport player to end and cleanup
-        virtualArmourStand.destroy();
-        virtualArmourStand = null;
+        if(virtualArmourStand != null) {
+            virtualArmourStand.destroy();
+            virtualArmourStand = null;
+        }
 
         currentPosition = flightPath.spline3D.getTripPosition(9000);
         Location location = getCurrentLocation();
 
         // teleport now and later to be sure
-        player.teleport(location);
         Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> {
+            player.teleport(location);
             player = null;
         }, 2);
     }
@@ -51,11 +53,12 @@ public class PlayerMover {
     private void startFlight() {
         currentPosition = flightPath.spline3D.getTripPosition(distanceTraveled);
         Location location = getCurrentLocation();
-
         this.virtualArmourStand = new VirtualVehicle(location, player);
-        player.teleport(location);
 
-        Bukkit.getOnlinePlayers().forEach(virtualArmourStand::showFor);
+        Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), ()-> {
+            player.teleport(location);
+            Bukkit.getOnlinePlayers().forEach(virtualArmourStand::showFor);
+        }, 1);
     }
 
     private Location getCurrentLocation() {

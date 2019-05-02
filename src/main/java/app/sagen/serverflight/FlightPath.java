@@ -42,6 +42,7 @@ public class FlightPath {
         this.to = to;
         Optional<LinkedList<Vertex>> vertices = flightGraph.getGraph().shortestPath(from, to);
         if (!vertices.isPresent()) throw new IllegalStateException("Cannot create a path from " + from + " to " + to);
+        System.out.println("Shortes patt\nFrom: " + from.toString() + "\nTo: " + to + "\nIs: " + vertices.get());
         float[][] points = new float[vertices.get().size()][3];
         int i = 0;
         for (Vertex vertex : vertices.get()) {
@@ -94,7 +95,7 @@ public class FlightPath {
                 break;
             }
 
-            position += 2f;
+            position += 3f;
         }
     }
 

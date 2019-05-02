@@ -19,10 +19,14 @@ public class Vertex {
     }
 
     public float heristic(Vertex vertex) {
-        return (float) Math.sqrt(Math.pow(this.x - vertex.x, 2) + Math.pow(this.y - vertex.y, 2) + Math.pow(this.z - vertex.z, 2));
+        // sum of each axis differance to make it prefer closer targets
+        return (float) Math.abs(this.x - vertex.x) + Math.abs(this.y - vertex.y) + Math.abs(this.z - vertex.z);
+        // return (float) Math.sqrt(Math.pow(this.x - vertex.x, 2) + Math.pow(this.y - vertex.y, 2) + Math.pow(this.z - vertex.z, 2));
     }
 
     public float heristic(float x, float y, float z) {
-        return (float) Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2) + Math.pow(this.z - z, 2));
+        // sum of each axis differance to make it prefer closer targets
+        return (float) Math.abs(this.x - x) + Math.abs(this.y - y) + Math.abs(this.z - z);
+        //return (float) Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2) + Math.pow(this.z - z, 2));
     }
 }

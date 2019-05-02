@@ -3,6 +3,7 @@ package app.sagen.serverflight.util;
 import lombok.Data;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class Graph {
@@ -56,61 +57,58 @@ public class Graph {
         return reachable;
     }
 
-    public Optional<LinkedList<Vertex>> shortestPath(Vertex start, Vertex end) {
-        HashMap<Vertex, Vertex> vertexParent = new HashMap<>();
-        HashMap<Vertex, Float> vertexHeuristics = new HashMap<>();
-        Set<Vertex> visited = new HashSet<>();
+    public Optional<LinkedList<Vertex>> shortestPath(Vertex source, Vertex target) {
+        // source: https://en.wikipedia.org/wiki/Dijkstra's_algorithm#Pseudocode
 
-        vertexHeuristics.put(start, 0f);
+        HashMap<Vertex, Vertex> prev = new HashMap<>();
+        HashMap<Vertex, Float> dist = new HashMap<>();
 
-        Vertex current = start;
-        for (; ; ) {
-            float currentHeuristic = vertexHeuristics.get(current);
+        Set<Vertex> Q = new HashSet<>();
 
-            // update heuristics of all non-visited neighbors
-            for (Vertex neighbor : adjVertices.get(current)) {
-                if (visited.contains(neighbor)) continue;
-                float neightborHeuristic = currentHeuristic + current.heristic(neighbor);
-                if (!vertexHeuristics.containsKey(neighbor)
-                        || vertexHeuristics.get(neighbor) > neightborHeuristic) {
-                    vertexHeuristics.put(neighbor, neightborHeuristic);
-                    vertexParent.put(neighbor, current);
-                }
-            }
-
-            // mark current as visited
-            visited.add(current);
-
-            // check for completion
-            if (visited.contains(end)) {
-                // we found a path
-                LinkedList<Vertex> vertices = new LinkedList<>();
-                Vertex cur = end;
-                vertices.add(end);
-                while (vertexParent.containsKey(cur)) {
-                    cur = vertexParent.get(cur);
-                    vertices.add(cur);
-                }
-                return Optional.of(reverse(vertices));
-            }
-
-            Vertex tmpCurrent = current;
-            Optional<Vertex> min = adjVertices.keySet().stream()
-                    .filter(v -> !visited.contains(v))
-                    .filter(vertexHeuristics::containsKey)
-                    .filter(v -> !tmpCurrent.equals(v))
-                    .min((v1, v2) -> {
-                        float h1 = vertexHeuristics.get(v1);
-                        float h2 = vertexHeuristics.get(v2);
-                        return Double.compare(h1, h2);
-                    });
-            if (!min.isPresent()) {
-                // no more nodes to visit
-                return Optional.empty();
-            }
-
-            current = min.get();
+        for(Vertex v : adjVertices.keySet()) {
+            prev.put(v, null);
+            dist.put(v, Float.MAX_VALUE);
+            Q.add(v);
         }
+
+        dist.put(source, 0f);
+
+        while(!Q.isEmpty()) {
+
+            Vertex u = dist.entrySet().stream()
+                    .filter(e -> Q.contains(e.getKey()))
+                    .min((e1, e2) -> Float.compare(e1.getValue(), e2.getValue())).get().getKey();
+
+            Q.remove(u);
+
+            // if finished
+            if(u == target) {
+                LinkedList<Vertex> S = new LinkedList<>();
+                if(prev.containsKey(u) || u == source) {
+                    while(u != null) {
+                        S.addFirst(u);
+                        u = prev.get(u);
+                    }
+                    return Optional.of(S);
+                }
+            }
+
+            for(Vertex v : adjVertices.get(u).stream()
+                    .filter(Q::contains)
+                    .collect(Collectors.toSet())) {
+
+                System.out.println("Sammenlikner " + u.getName() + "(h=" + dist.get(u) + ") og " + v.getName() + "(h=" + dist.get(v) + "), heuristics mellom dem er " + u.heristic(v));
+
+                float alt = dist.get(u) + u.heristic(v);
+                if(alt <= dist.get(v)) {
+                    System.out.println("    Ny kortere heuristic er " + alt);
+                    dist.put(v, alt);
+                    prev.put(v, u);
+                }
+            }
+        }
+
+        return Optional.empty();
     }
 
     private void allReachable(Set<Vertex> vertices, Vertex vertex) {
