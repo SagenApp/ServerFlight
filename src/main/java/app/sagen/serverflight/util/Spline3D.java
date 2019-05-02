@@ -41,22 +41,23 @@ public class Spline3D {
 
         // gamma
         gamma[0] = 0.5F;
-        for (int i = 1; i < n; i++)
+        for (int i = 1; i < n; i++) {
             gamma[i] = 1.0F / (4.0F - gamma[i - 1]);
+        }
         gamma[n] = 1.0F / (2.0F - gamma[n - 1]);
 
         // delta
         delta[0] = 3.0F * (axis[1] - axis[0]) * gamma[0];
-        for (int i = 1; i < n; i++)
-            delta[i] = (3.0F * (axis[i + 1] - axis[i - 1]) - delta[i - 1])
-                    * gamma[i];
-        delta[n] = (3.0F * (axis[n] - axis[n - 1]) - delta[n - 1])
-                * gamma[n];
+        for (int i = 1; i < n; i++) {
+            delta[i] = (3.0F * (axis[i + 1] - axis[i - 1]) - delta[i - 1]) * gamma[i];
+        }
+        delta[n] = (3.0F * (axis[n] - axis[n - 1]) - delta[n - 1]) * gamma[n];
 
         // d
         d[n] = delta[n];
-        for (int i = n - 1; i >= 0; i--)
+        for (int i = n - 1; i >= 0; i--) {
             d[i] = delta[i] - gamma[i] * d[i + 1];
+        }
 
         // c
         for (int i = 0; i < n; i++) {
@@ -90,10 +91,12 @@ public class Spline3D {
 
     public final void getPositionAt(float param, float[] result) {
         // clamp
-        if (param < 0.0f)
+        if (param < 0.0f) {
             param = 0.0f;
-        if (param >= count - 1)
+        }
+        if (param >= count - 1) {
             param = (count - 1) - Math.ulp(count - 1);
+        }
 
         // split
         int ti = (int) param;
@@ -146,12 +149,10 @@ public class Spline3D {
             last = this.travelCache.get(mid);
 
             if (last.travelled < totalTrip) {
-                if (lo == mid)
-                    break;
+                if (lo == mid) break;
                 lo = mid;
             } else {
-                if (hi == mid)
-                    break;
+                if (hi == mid) break;
                 hi = mid;
             }
         }
@@ -186,7 +187,6 @@ public class Spline3D {
 
         this.travelCache = new ArrayList<>();
         this.travelCache.add(new CacheItem(x, y, z));
-
 
         this.getTripPosition(50000); // force full caching
     }
