@@ -13,7 +13,9 @@ import java.util.Set;
 import java.util.UUID;
 
 @Data
-public class VirtualArmourStand {
+public class VirtualVehicle {
+
+    public static final float HEIGHT_OFFSET = -1.2f;
 
     Location location;
 
@@ -26,12 +28,12 @@ public class VirtualArmourStand {
     PacketPlayOutMount packetPlayOutMount;
 
     Set<UUID> visibleFor = new HashSet<>();
+    Set<UUID> shownFor = new HashSet<>();
 
-    public VirtualArmourStand(Location location, Player rider) {
+    public VirtualVehicle(Location location, Player rider) {
         WorldServer worldServer = ((CraftWorld)location.getWorld()).getHandle();
         this.rider = rider;
         entity = new EntityArmorStand(EntityTypes.ARMOR_STAND, worldServer);
-        entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), 0);
         entity.setNoGravity(true);
         entity.setInvulnerable(true);
         entity.setInvisible(true);
@@ -51,7 +53,7 @@ public class VirtualArmourStand {
         spawnFor(player);
     }
 
-    public void destroyFor(Player player) {
+    public void hideFor(Player player) {
         this.visibleFor.remove(player.getUniqueId());
         destroyFor(player);
     }
@@ -75,7 +77,7 @@ public class VirtualArmourStand {
 
     public void setLocation(Location location) {
         this.location = location;
-        entity.setLocation(location.getX(), location.getY(), location.getZ(), location.getYaw(), 0);
+        entity.setLocation(location.getX(), location.getY() + HEIGHT_OFFSET, location.getZ(), location.getYaw(), 0);
         packetPlayOutSpawnEntityLiving = new PacketPlayOutSpawnEntityLiving(entity);
         packetPlayOutEntityTeleport = new PacketPlayOutEntityTeleport(entity);
         packetPlayOutEntityDestroy = new PacketPlayOutEntityDestroy(entityId);

@@ -2,7 +2,7 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
-import app.sagen.serverflight.util.VirtualArmourStand;
+import app.sagen.serverflight.util.VirtualVehicle;
 import lombok.Data;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -54,7 +54,7 @@ public class FlightPath {
     public void addPlayer(Player player) {
         if(playerMovers.containsKey(player.getUniqueId()))
             playerMovers.get(player.getUniqueId()).shutdown(); // quit the old path
-        playerMovers.put(player.getUniqueId(), new PlayerMover(player));
+        playerMovers.put(player.getUniqueId(), new PlayerMover(this, player));
     }
 
     public void removePlayer(Player player) {
@@ -92,7 +92,7 @@ public class FlightPath {
                 break;
             }
 
-            position += 1f;
+            position += 2f;
         }
     }
 
@@ -105,9 +105,9 @@ public class FlightPath {
         private Player player;
         private float distanceTraveled;
         private float[] currentPosition = null;
-        private VirtualArmourStand virtualArmourStand;
+        private VirtualVehicle virtualArmourStand;
 
-        public PlayerMover(Player player) {
+        public PlayerMover(FlightPath flightPath, Player player) {
             this.player = player;
             this.distanceTraveled = 0;
             startFlight();
@@ -144,7 +144,7 @@ public class FlightPath {
 
             Location location = getCurrentLocation();
 
-            this.virtualArmourStand = new VirtualArmourStand(location, player);
+            this.virtualArmourStand = new VirtualVehicle(location, player);
             player.teleport(location);
 
             Bukkit.getOnlinePlayers().forEach(virtualArmourStand::showFor);
