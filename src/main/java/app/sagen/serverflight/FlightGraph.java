@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Data
-public class WorldFlightGrid {
+public class FlightGraph {
 
     private String world;
     private Graph graph;
@@ -18,7 +18,7 @@ public class WorldFlightGrid {
     // flightpaths from a vertex
     private HashMap<Vertex, List<FlightPath>> flightPaths = new HashMap<>();
 
-    public WorldFlightGrid(String world, Graph graph) {
+    public FlightGraph(String world, Graph graph) {
         this.world = world;
         this.graph = graph;
 

@@ -29,18 +29,18 @@ public class FlightPath {
 
     Color color = cleanColors[ThreadLocalRandom.current().nextInt(cleanColors.length)];
 
-    WorldFlightGrid worldFlightGrid;
+    FlightGraph flightGraph;
     Vertex from;
     Vertex to;
     Spline3D spline3D;
 
     Map<UUID, PlayerMover> playerMovers = new HashMap<>();
 
-    public FlightPath(WorldFlightGrid worldFlightGrid, Vertex from, Vertex to) {
-        this.worldFlightGrid = worldFlightGrid;
+    public FlightPath(FlightGraph flightGraph, Vertex from, Vertex to) {
+        this.flightGraph = flightGraph;
         this.from = from;
         this.to = to;
-        Optional<LinkedList<Vertex>> vertices = worldFlightGrid.getGraph().shortestPath(from, to);
+        Optional<LinkedList<Vertex>> vertices = flightGraph.getGraph().shortestPath(from, to);
         if (!vertices.isPresent()) throw new IllegalStateException("Cannot create a path from " + from + " to " + to);
         float[][] points = new float[vertices.get().size()][3];
         int i = 0;
@@ -82,7 +82,7 @@ public class FlightPath {
         float maxPosition = spline3D.getTotalTripDistance();
         while (position <= maxPosition) {
             float[] location = spline3D.getTripPosition(position);
-            World world = Bukkit.getWorld(worldFlightGrid.getWorld());
+            World world = Bukkit.getWorld(flightGraph.getWorld());
             if (world != null) {
                 world.spawnParticle(Particle.REDSTONE,
                         location[0] - 0.25f + Math.random() * 0.5f,
@@ -90,7 +90,7 @@ public class FlightPath {
                         location[2] - 0.25f + Math.random() * 0.5f,
                         0, new Particle.DustOptions(color, 1));
             } else {
-                System.out.println("Cant find the world " + worldFlightGrid.getWorld());
+                System.out.println("Cant find the world " + flightGraph.getWorld());
                 break;
             }
 

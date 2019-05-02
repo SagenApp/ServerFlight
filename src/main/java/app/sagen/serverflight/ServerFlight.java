@@ -13,7 +13,7 @@ public class ServerFlight extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        FlightController.get().getWorldFlightGrids().values().forEach(WorldFlightGrid::shutdown);
+        WorldController.get().getWorldFlightGrids().values().forEach(FlightGraph::shutdown);
     }
 
     @Override
@@ -23,18 +23,18 @@ public class ServerFlight extends JavaPlugin {
         // load flightgrid from every world
         Bukkit.getWorlds().stream()
                 .map(World::getName)
-                .forEach(FlightController.get()::getFlightGridInWorld);
+                .forEach(WorldController.get()::getGraphInWorld);
 
         // create test grid
-        FlightController.get().createTestGrid();
+        WorldController.get().createTestGrid();
 
         Bukkit.getPluginManager().registerEvents(new FlightListener(), this);
 
         // update every FlightPath every tick
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-                () -> FlightController.get().updateAll(), 1, 1);
+                () -> WorldController.get().updateAll(), 1, 1);
         // update all particles every 1/4 second
         Bukkit.getScheduler().runTaskTimerAsynchronously(this,
-                () -> FlightController.get().updateAllParticles(), 5, 5);
+                () -> WorldController.get().updateAllParticles(), 5, 5);
     }
 }

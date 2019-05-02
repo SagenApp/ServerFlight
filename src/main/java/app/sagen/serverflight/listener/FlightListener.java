@@ -2,7 +2,8 @@ package app.sagen.serverflight.listener;
 
 import app.sagen.serverflight.FlightPath;
 import app.sagen.serverflight.ServerFlight;
-import app.sagen.serverflight.WorldFlightGrid;
+import app.sagen.serverflight.FlightGraph;
+import app.sagen.serverflight.WorldController;
 import app.sagen.serverflight.util.Vertex;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -30,14 +31,14 @@ public class FlightListener implements Listener {
 
         e.setCancelled(true);
 
-        WorldFlightGrid worldFlightGrid = ServerFlight.getInstance().getWorldFlightGrids().get(block.getWorld().getName());
-        Optional<Vertex> closesVertex = worldFlightGrid.getClosesVertex(block.getX(), block.getY(), block.getZ(), 10);
+        FlightGraph flightGraph = WorldController.get().getGraphInWorld(block.getWorld().getName());
+        Optional<Vertex> closesVertex = flightGraph.getClosesVertex(block.getX(), block.getY(), block.getZ(), 10);
         if (!closesVertex.isPresent()) {
             p.sendMessage("No nearby flightpath!");
             return;
         }
 
-        List<FlightPath> availableMovers = worldFlightGrid.getAllAvailableMoversFrom(closesVertex.get());
+        List<FlightPath> availableMovers = flightGraph.getAllAvailableMoversFrom(closesVertex.get());
         if (availableMovers.isEmpty()) {
             p.sendMessage("No available flights from this point!");
             return;

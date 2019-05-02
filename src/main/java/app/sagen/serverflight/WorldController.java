@@ -3,50 +3,48 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Graph;
 import app.sagen.serverflight.util.Vertex;
 import lombok.Data;
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.World;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Data
-public class FlightController {
+public class WorldController {
 
-    private static FlightController instance;
+    private static WorldController instance;
 
-    public static FlightController get() {
-        if(instance == null) instance = new FlightController();
+    public static WorldController get() {
+        if(instance == null) instance = new WorldController();
         return instance;
     }
 
-    private Map<String, WorldFlightGrid> worldFlightGrids = new HashMap<>();
+    private Map<String, FlightGraph> worldFlightGrids = new HashMap<>();
 
-    public Set<WorldFlightGrid> getAllFlightGrids() {
+    public Set<FlightGraph> getAllGraphs() {
         return new HashSet<>(worldFlightGrids.values());
     }
 
-    public WorldFlightGrid getFlightGridInWorld(String world) {
+    public FlightGraph getGraphInWorld(String world) {
         world = world.toLowerCase();
         if(!worldFlightGrids.containsKey(world.toLowerCase())) {
-            WorldFlightGrid worldFlightGrid = new WorldFlightGrid(world, new Graph());
-            worldFlightGrids.put(world, worldFlightGrid); // put empty flightgrid
-            return worldFlightGrid;
+            FlightGraph flightGraph = new FlightGraph(world, new Graph());
+            worldFlightGrids.put(world, flightGraph); // put empty flightgrid
+            return flightGraph;
         }
         return worldFlightGrids.get(world);
     }
 
     public void updateAll() {
-        worldFlightGrids.values().forEach(WorldFlightGrid::update);
+        worldFlightGrids.values().forEach(FlightGraph::update);
     }
 
     public void updateAllParticles() {
-        worldFlightGrids.values().forEach(WorldFlightGrid::updateParticles);
+        worldFlightGrids.values().forEach(FlightGraph::updateParticles);
     }
 
     public void createTestGrid() {
-        for (WorldFlightGrid worldFlightGrid : FlightController.get().getAllFlightGrids()) {
+        for (FlightGraph flightGraph : getAllGraphs()) {
             Graph graph = new Graph();
 
             Vertex middle = new Vertex("Middle", 0.5f, 125.5f, 0.5f, false);
@@ -72,11 +70,11 @@ public class FlightController {
             graph.addEdge(middle, northWestDown);
 
             // set grid and recalculate
-            worldFlightGrid.setGraph(graph);
-            worldFlightGrid.setupFlightMovers();
+            flightGraph.setGraph(graph);
+            flightGraph.setupFlightMovers();
 
             // place beacons
-            World world = Bukkit.getWorld(worldFlightGrid.getWorld());
+            World world = Bukkit.getWorld(flightGraph.getWorld());
             world.getBlockAt((int) northDown.getX() - 1, (int) northDown.getY(), (int) northDown.getZ()).setType(Material.BEACON);
             world.getBlockAt((int) southDown.getX() - 1, (int) southDown.getY(), (int) southDown.getZ()).setType(Material.BEACON);
             world.getBlockAt((int) eastDown.getX() - 1, (int) eastDown.getY(), (int) eastDown.getZ()).setType(Material.BEACON);
