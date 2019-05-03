@@ -1,3 +1,26 @@
+/*
+ * MIT License
+ * 
+ * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Graph;
@@ -119,45 +142,6 @@ public class WorldController {
         adminmodes.clear();
         adminmmodeBossbar.removeAll();
         getAllGraphs().forEach(FlightGraph::shutdown);
-    }
-
-    public void createTestGrid() {
-        for (FlightGraph flightGraph : getAllGraphs()) {
-            Graph graph = new Graph();
-
-            Vertex middle = new Vertex("Middle", 0.5f, 125.5f, 0.5f, false);
-            Vertex northDown = new Vertex("North-Down", 50.5f, 100.5f, 0.5f, true);
-            Vertex southDown = new Vertex("South-Down", -50.5f, 100.5f, 0.5f, true);
-            Vertex eastDown = new Vertex("East-Down", 0.5f, 100.5f, 50.5f, true);
-            Vertex westDown = new Vertex("West-Down", 0.5f, 100.5f, -50.5f, true);
-            Vertex northWestDown = new Vertex("NorthWest-Down", 50.5f, 100.5f, -50.5f, true);
-
-            graph.addVertex(middle);
-            graph.addVertex(northDown);
-            graph.addVertex(southDown);
-            graph.addVertex(eastDown);
-            graph.addVertex(westDown);
-            graph.addVertex(northWestDown);
-
-            graph.addEdge(middle, northDown);
-            graph.addEdge(middle, southDown);
-            graph.addEdge(middle, eastDown);
-            graph.addEdge(middle, westDown);
-            graph.addEdge(northDown, northWestDown);
-            graph.addEdge(westDown, northWestDown);
-            graph.addEdge(middle, northWestDown);
-
-            // set grid and recalculate
-            flightGraph.setGraph(graph);
-            flightGraph.setupFlightMovers();
-
-            // place beacons
-            World world = Bukkit.getWorld(flightGraph.getWorld());
-            world.getBlockAt((int) northDown.getX() - 1, (int) northDown.getY(), (int) northDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int) southDown.getX() - 1, (int) southDown.getY(), (int) southDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int) eastDown.getX() - 1, (int) eastDown.getY(), (int) eastDown.getZ()).setType(Material.BEACON);
-            world.getBlockAt((int) westDown.getX() - 1, (int) westDown.getY(), (int) westDown.getZ()).setType(Material.BEACON);
-        }
     }
 
     public void playerJoin(Player player) {
