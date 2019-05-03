@@ -6,3 +6,4 @@
 - Implement interactive tool to create edges
 - Add system for creating beacons and selecting available destinations
 - Fix particles
+- Support more than 9 destinations `slots = 9 * ((int)(9/destinations))`
