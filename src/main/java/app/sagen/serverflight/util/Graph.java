@@ -1,18 +1,18 @@
 /*
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -88,7 +88,7 @@ public class Graph {
 
         Set<Vertex> Q = new HashSet<>();
 
-        for(Vertex v : adjVertices.keySet()) {
+        for (Vertex v : adjVertices.keySet()) {
             prev.put(v, null);
             dist.put(v, Float.MAX_VALUE);
             Q.add(v);
@@ -96,7 +96,7 @@ public class Graph {
 
         dist.put(source, 0f);
 
-        while(!Q.isEmpty()) {
+        while (!Q.isEmpty()) {
 
             Vertex u = dist.entrySet().stream()
                     .filter(e -> Q.contains(e.getKey()))
@@ -105,10 +105,10 @@ public class Graph {
             Q.remove(u);
 
             // if finished
-            if(u == target) {
+            if (u == target) {
                 LinkedList<Vertex> S = new LinkedList<>();
-                if(prev.containsKey(u) || u == source) {
-                    while(u != null) {
+                if (prev.containsKey(u) || u == source) {
+                    while (u != null) {
                         S.addFirst(u);
                         u = prev.get(u);
                     }
@@ -116,14 +116,14 @@ public class Graph {
                 }
             }
 
-            for(Vertex v : adjVertices.get(u).stream()
+            for (Vertex v : adjVertices.get(u).stream()
                     .filter(Q::contains)
                     .collect(Collectors.toSet())) {
 
                 System.out.println("Sammenlikner " + u.getName() + "(h=" + dist.get(u) + ") og " + v.getName() + "(h=" + dist.get(v) + "), heuristics mellom dem er " + u.heristic(v));
 
                 float alt = dist.get(u) + u.heristic(v);
-                if(alt <= dist.get(v)) {
+                if (alt <= dist.get(v)) {
                     System.out.println("    Ny kortere heuristic er " + alt);
                     dist.put(v, alt);
                     prev.put(v, u);

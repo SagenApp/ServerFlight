@@ -1,18 +1,18 @@
 /*
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -26,10 +26,7 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
 import lombok.Data;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
-import org.bukkit.Particle;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -100,26 +97,7 @@ public class FlightPath {
     }
 
     public void updateParticles() {
-        if (playerMovers.size() == 0) return;
-        // walk through the path
-        float position = 0f;
-        float maxPosition = spline3D.getTotalTripDistance();
-        while (position <= maxPosition) {
-            float[] location = spline3D.getTripPosition(position);
-            World world = Bukkit.getWorld(flightGraph.getWorld());
-            if (world != null) {
-                world.spawnParticle(Particle.REDSTONE,
-                        location[0] - 0.25f + Math.random() * 0.5f,
-                        location[1] - 0.25f + Math.random() * 0.5f,
-                        location[2] - 0.25f + Math.random() * 0.5f,
-                        0, new Particle.DustOptions(color, 1));
-            } else {
-                System.out.println("Cant find the world " + flightGraph.getWorld());
-                break;
-            }
-
-            position += 3f;
-        }
+        playerMovers.values().forEach(PlayerMover::updateParticles);
     }
 
     public void shutdown() {

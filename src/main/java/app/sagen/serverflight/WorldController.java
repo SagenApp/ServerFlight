@@ -1,18 +1,18 @@
 /*
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -24,11 +24,8 @@
 package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Graph;
-import app.sagen.serverflight.util.Vertex;
-import lombok.Data;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -42,18 +39,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public class WorldController {
 
     private static WorldController instance;
-
-    public static WorldController get() {
-        if(instance == null) instance = new WorldController();
-        return instance;
-    }
-
     private Map<String, FlightGraph> worldFlightGrids = new HashMap<>();
     private Map<UUID, ItemStack[]> adminmodes = new ConcurrentHashMap<>();
     private BossBar adminmmodeBossbar;
-
     public WorldController() {
         adminmmodeBossbar = Bukkit.createBossBar("§2§lFlight Admin §7- interactive mode enabled", BarColor.GREEN, BarStyle.SOLID);
+    }
+
+    public static WorldController get() {
+        if (instance == null) instance = new WorldController();
+        return instance;
     }
 
     public boolean isAdminmode(Player player) {
@@ -61,12 +56,11 @@ public class WorldController {
     }
 
     public void setAdminmode(Player player, boolean adminmode) {
-        if(!adminmode) {
+        if (!adminmode) {
             player.getInventory().setContents(adminmodes.get(player.getUniqueId())); // restore inventory
             adminmodes.remove(player.getUniqueId());
             adminmmodeBossbar.removePlayer(player);
-        }
-        else {
+        } else {
             adminmodes.put(player.getUniqueId(), player.getInventory().getContents()); // save inventory
             setAdminInventory(player); // set inventory to admin tools
             adminmmodeBossbar.addPlayer(player);
@@ -117,7 +111,7 @@ public class WorldController {
 
     public FlightGraph getGraphInWorld(String world) {
         world = world.toLowerCase();
-        if(!worldFlightGrids.containsKey(world.toLowerCase())) {
+        if (!worldFlightGrids.containsKey(world.toLowerCase())) {
             FlightGraph flightGraph = new FlightGraph(world, new Graph());
             worldFlightGrids.put(world, flightGraph); // put empty flightgrid
             return flightGraph;
@@ -136,7 +130,7 @@ public class WorldController {
     public void shutdown() {
         for (UUID uuid : adminmodes.keySet()) {
             Player player = Bukkit.getPlayer(uuid);
-            if(player == null) continue;
+            if (player == null) continue;
             setAdminmode(player, false);
         }
         adminmodes.clear();
@@ -145,7 +139,7 @@ public class WorldController {
     }
 
     public void playerJoin(Player player) {
-        if(isAdminmode(player)) {
+        if (isAdminmode(player)) {
             adminmmodeBossbar.addPlayer(player);
         }
     }

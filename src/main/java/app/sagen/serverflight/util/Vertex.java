@@ -1,18 +1,18 @@
 /*
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -43,13 +43,13 @@ public class Vertex {
 
     public float heristic(Vertex vertex) {
         // sum of each axis differance to make it prefer closer targets
-        return (float) Math.abs(this.x - vertex.x) + Math.abs(this.y - vertex.y) + Math.abs(this.z - vertex.z);
+        return Math.abs(this.x - vertex.x) + Math.abs(this.y - vertex.y) + Math.abs(this.z - vertex.z);
         // return (float) Math.sqrt(Math.pow(this.x - vertex.x, 2) + Math.pow(this.y - vertex.y, 2) + Math.pow(this.z - vertex.z, 2));
     }
 
     public float heristic(float x, float y, float z) {
         // sum of each axis differance to make it prefer closer targets
-        return (float) Math.abs(this.x - x) + Math.abs(this.y - y) + Math.abs(this.z - z);
+        return Math.abs(this.x - x) + Math.abs(this.y - y) + Math.abs(this.z - z);
         //return (float) Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2) + Math.pow(this.z - z, 2));
     }
 }

@@ -1,18 +1,18 @@
 /*
  * MIT License
- * 
+ *
  * Copyright (c) 2019 Alexander Meisdalen Sagen <alexmsagen@gmail.com>
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -44,6 +44,8 @@ import java.util.Optional;
 
 public class PlayerListener implements Listener {
 
+    Vertex lastCreated = null;
+
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
         WorldController.get().playerJoin(e.getPlayer());
@@ -56,44 +58,42 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onItemClick(InventoryClickEvent e) {
-        if(!(e.getWhoClicked() instanceof Player)) return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
         Player clicker = (Player) e.getWhoClicked();
-        if(WorldController.get().isAdminmode(clicker)) {
+        if (WorldController.get().isAdminmode(clicker)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemDrag(InventoryDragEvent e) {
-        if(!(e.getWhoClicked() instanceof Player)) return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
         Player clicker = (Player) e.getWhoClicked();
-        if(WorldController.get().isAdminmode(clicker)) {
+        if (WorldController.get().isAdminmode(clicker)) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent e) {
-        if(WorldController.get().isAdminmode(e.getPlayer())) {
+        if (WorldController.get().isAdminmode(e.getPlayer())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onItemPickup(InventoryPickupItemEvent e) {
-        if(!(e.getInventory().getHolder() instanceof Player)) return;
-        Player player = (Player)e.getInventory().getHolder();
-        if(WorldController.get().isAdminmode(player)) {
+        if (!(e.getInventory().getHolder() instanceof Player)) return;
+        Player player = (Player) e.getInventory().getHolder();
+        if (WorldController.get().isAdminmode(player)) {
             e.setCancelled(true);
         }
     }
 
-    Vertex lastCreated = null;
-
     @EventHandler
     public void onClickMenu(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if(e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
+        if (e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
             if (!WorldController.get().isAdminmode(p)) return;
             ItemStack itemInHand = p.getInventory().getItemInMainHand();
             if (itemInHand.getItemMeta() == null) return;
@@ -115,7 +115,7 @@ public class PlayerListener implements Listener {
                 Vertex vertex = new Vertex("Vertex-" + (num + 1), x, y, z, true);
                 graph.getGraph().addVertex(vertex);
 
-                if(lastCreated != null) {
+                if (lastCreated != null) {
                     graph.getGraph().addEdge(vertex, lastCreated);
                 }
                 lastCreated = vertex;
