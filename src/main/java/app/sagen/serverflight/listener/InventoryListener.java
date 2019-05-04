@@ -49,7 +49,7 @@ public class InventoryListener implements Listener {
 
         // cleanup
         if(menu != null) {
-            menu.ecivtViewers();
+            //menu.ecivtViewers();
             AbstractMenu.menus.remove(menu);
         }
     }

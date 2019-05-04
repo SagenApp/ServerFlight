@@ -63,7 +63,6 @@ public class FlightMenu extends AbstractMenu {
         if (is == null || !is.hasItemMeta() || !is.getItemMeta().hasDisplayName()) return;
         String disp = is.getItemMeta().getDisplayName();
         if (flightPaths.containsKey(disp)) {
-            this.ecivtViewers();
             flightPaths.get(disp).addPlayer((Player) e.getWhoClicked());
         }
     }
