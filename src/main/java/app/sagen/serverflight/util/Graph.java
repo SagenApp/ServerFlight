@@ -76,7 +76,6 @@ public class Graph {
         Set<Vertex> reachable = new HashSet<>();
         allReachable(reachable, vertex);
         reachable.remove(vertex);
-        System.out.println("All reachable vertices from " + vertex + " is " + reachable);
         return reachable;
     }
 
@@ -119,12 +118,8 @@ public class Graph {
             for (Vertex v : adjVertices.get(u).stream()
                     .filter(Q::contains)
                     .collect(Collectors.toSet())) {
-
-                System.out.println("Sammenlikner " + u.getName() + "(h=" + dist.get(u) + ") og " + v.getName() + "(h=" + dist.get(v) + "), heuristics mellom dem er " + u.heristic(v));
-
                 float alt = dist.get(u) + u.heristic(v);
                 if (alt <= dist.get(v)) {
-                    System.out.println("    Ny kortere heuristic er " + alt);
                     dist.put(v, alt);
                     prev.put(v, u);
                 }

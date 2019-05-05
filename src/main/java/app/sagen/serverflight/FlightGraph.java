@@ -94,18 +94,21 @@ public class FlightGraph {
     public void updateParticles() {
         // make points visible for admin mode players
         for(Player o : Bukkit.getOnlinePlayers()) {
+            System.out.println("Updating particles for player " + o.getName());
             if(!o.getWorld().getName().equalsIgnoreCase(this.world)) continue;
+            System.out.println("    - is in the correct world");
             if(!WorldController.get().isAdminmode(o)) continue;
+            System.out.println("    - is in admin mode");
 
+            System.out.println("    - vertices:");
             for(Vertex v : graph.getAdjVertices().keySet()) {
-                for (int i = 0; i < 2; i++) {
-                    o.spawnParticle(Particle.REDSTONE,
-                            (v.getX() - 0.25f) + (Math.random() * 0.5f),
-                            (v.getY() - 0.25f) + (Math.random() * 0.5f),
-                            (v.getZ() - 0.25f) + (Math.random() * 0.5f),
-                            0, new Particle.DustOptions(Color.fromBGR(1, 1, 255),
-                                    ThreadLocalRandom.current().nextInt(5)));
-                }
+                System.out.println("        - " + v.getName());
+                o.spawnParticle(Particle.REDSTONE,
+                        (v.getX() - 0.25f) + (Math.random() * 0.5f),
+                        (v.getY() - 0.25f) + (Math.random() * 0.5f),
+                        (v.getZ() - 0.25f) + (Math.random() * 0.5f),
+                        0, new Particle.DustOptions(Color.fromBGR(1, 1, 255),
+                                ThreadLocalRandom.current().nextInt(5)));
             }
         }
 
