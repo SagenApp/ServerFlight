@@ -41,6 +41,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerListener implements Listener {
 
@@ -111,8 +112,8 @@ public class PlayerListener implements Listener {
                     p.sendMessage("§2§lFA §cYou are too close to a point");
                     return;
                 }
-                int num = WorldController.get().getGraphInWorld(p.getWorld().getName()).getGraph().getAdjVertices().size();
-                Vertex vertex = new Vertex("Vertex-" + (num + 1), x, y, z, true);
+                int num = ThreadLocalRandom.current().nextInt(999999);
+                Vertex vertex = new Vertex("Vertex-" + num, x, y, z, true);
                 graph.getGraph().addVertex(vertex);
 
                 if (lastCreated != null) {
@@ -121,7 +122,7 @@ public class PlayerListener implements Listener {
                 lastCreated = vertex;
 
                 graph.setupFlightMovers();
-                p.sendMessage("§2§lFA §aYou successfully created a point");
+                p.sendMessage("§2§lFA §aYou successfully created the point " + vertex.getName());
                 return;
             }
         }

@@ -30,6 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
@@ -94,21 +95,41 @@ public class FlightGraph {
     public void updateParticles() {
         // make points visible for admin mode players
         for(Player o : Bukkit.getOnlinePlayers()) {
-            System.out.println("Updating particles for player " + o.getName());
             if(!o.getWorld().getName().equalsIgnoreCase(this.world)) continue;
-            System.out.println("    - is in the correct world");
             if(!WorldController.get().isAdminmode(o)) continue;
-            System.out.println("    - is in admin mode");
 
-            System.out.println("    - vertices:");
-            for(Vertex v : graph.getAdjVertices().keySet()) {
-                System.out.println("        - " + v.getName());
+            Set<Vertex> drawnVertices = new HashSet<>();
+            for(Map.Entry<Vertex, List<Vertex>> entry : graph.getAdjVertices().entrySet()) {
+                drawnVertices.add(entry.getKey());
                 o.spawnParticle(Particle.REDSTONE,
-                        (v.getX() - 0.25f) + (Math.random() * 0.5f),
-                        (v.getY() - 0.25f) + (Math.random() * 0.5f),
-                        (v.getZ() - 0.25f) + (Math.random() * 0.5f),
+                        (entry.getKey().getX() - 0.25f) + (Math.random() * 0.5f),
+                        (entry.getKey().getY() - 0.25f) + (Math.random() * 0.5f),
+                        (entry.getKey().getZ() - 0.25f) + (Math.random() * 0.5f),
                         0, new Particle.DustOptions(Color.fromBGR(1, 1, 255),
                                 ThreadLocalRandom.current().nextInt(5)));
+
+                // draw every edge
+                entry.getValue().stream().filter(v -> !drawnVertices.contains(v)).forEach((to) -> {
+
+                    float speed = 0.5f; // speed is 0.5 blocks per particle
+
+                    Vertex from = entry.getKey();
+
+                    Vector vf = new Vector(from.getX(), from.getY(), from.getZ());
+                    Vector vt = new Vector(to.getX(), to.getY(), to.getZ());
+
+                    Vector velocity = vt.subtract(vf);
+                    velocity.normalize().multiply(speed);
+
+                    for(double d = vf.distance(vt); d >= 0; d -= speed) {
+                        vf.add(velocity);
+                        o.spawnParticle(Particle.REDSTONE,
+                                vf.getX(), vf.getY(), vf.getZ(), 0,
+                                new Particle.DustOptions(Color.fromBGR(1, 1, 255),
+                                        ThreadLocalRandom.current().nextInt(5)));
+                    }
+
+                });
             }
         }
 
