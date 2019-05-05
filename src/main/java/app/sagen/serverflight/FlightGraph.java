@@ -26,6 +26,9 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Graph;
 import app.sagen.serverflight.util.Vertex;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Particle;
@@ -35,7 +38,9 @@ import org.bukkit.util.Vector;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class FlightGraph {
 
     private String world;

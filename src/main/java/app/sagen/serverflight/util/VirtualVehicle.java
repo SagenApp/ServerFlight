@@ -24,6 +24,9 @@
 package app.sagen.serverflight.util;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import net.minecraft.server.v1_14_R1.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -35,7 +38,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class VirtualVehicle {
 
     public static final float HEIGHT_OFFSET = -1.2f;

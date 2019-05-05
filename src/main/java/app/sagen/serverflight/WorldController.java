@@ -91,9 +91,16 @@ public class WorldController {
         ItemStack goldenHoe = new ItemStack(Material.GOLDEN_HOE, 1);
         ItemMeta goldenHoeItemMeta = goldenHoe.getItemMeta();
         goldenHoeItemMeta.setDisplayName("§9§lConnect points");
-        goldenHoeItemMeta.setLore(Arrays.asList("§7Use this tool to create a", "§7connection between multiple", "§7points"));
+        goldenHoeItemMeta.setLore(Arrays.asList("§7Use this tool to create a", "§7connection between two", "§7points"));
         goldenHoe.setItemMeta(goldenHoeItemMeta);
         player.getInventory().setItem(1, goldenHoe);
+
+        ItemStack goldenHoe2 = new ItemStack(Material.GOLDEN_HOE, 1);
+        ItemMeta goldenHoeItemMeta2 = goldenHoe.getItemMeta();
+        goldenHoeItemMeta2.setDisplayName("§c§lDisconnect points");
+        goldenHoeItemMeta2.setLore(Arrays.asList("§7Use this tool to delete a", "§7connection between two", "§7points"));
+        goldenHoe2.setItemMeta(goldenHoeItemMeta2);
+        player.getInventory().setItem(2, goldenHoe2);
 
         ItemStack book = new ItemStack(Material.ENCHANTED_BOOK, 1);
         ItemMeta bookItemMeta = book.getItemMeta();

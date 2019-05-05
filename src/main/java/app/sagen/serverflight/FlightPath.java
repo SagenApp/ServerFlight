@@ -26,6 +26,9 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bukkit.Color;
 import org.bukkit.entity.Player;
 
@@ -33,7 +36,9 @@ import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class FlightPath {
 
     private static Color[] cleanColors = new Color[]{

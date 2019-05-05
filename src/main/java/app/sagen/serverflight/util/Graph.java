@@ -24,11 +24,16 @@
 package app.sagen.serverflight.util;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class Graph {
     private String world;
     private Map<Vertex, List<Vertex>> adjVertices = new HashMap<>();

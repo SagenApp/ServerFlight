@@ -24,11 +24,16 @@
 package app.sagen.serverflight.util;
 
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class Spline3D {
     private final int count;
     private final Cubic[] x, y, z;

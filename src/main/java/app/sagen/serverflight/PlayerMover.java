@@ -25,6 +25,9 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.VirtualVehicle;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
@@ -35,7 +38,9 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
-@Data
+@Getter
+@Setter
+@ToString
 public class PlayerMover {
     private FlightPath flightPath;
     private Player player;
