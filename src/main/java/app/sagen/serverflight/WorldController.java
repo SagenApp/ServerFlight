@@ -24,6 +24,7 @@
 package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Graph;
+import app.sagen.serverflight.util.Vertex;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
@@ -41,6 +42,7 @@ public class WorldController {
     private static WorldController instance;
     private Map<String, FlightGraph> worldFlightGrids = new HashMap<>();
     private Map<UUID, ItemStack[]> adminmodes = new ConcurrentHashMap<>();
+    private Map<UUID, Vertex> selectedVertex = new HashMap<>();
     private BossBar adminmmodeBossbar;
     public WorldController() {
         adminmmodeBossbar = Bukkit.createBossBar("§2§lFlight Admin §7- interactive mode enabled", BarColor.GREEN, BarStyle.SOLID);
@@ -49,6 +51,15 @@ public class WorldController {
     public static WorldController get() {
         if (instance == null) instance = new WorldController();
         return instance;
+    }
+
+    public Optional<Vertex> getSelectedVertex(UUID uuid) {
+        return Optional.ofNullable(selectedVertex.get(uuid));
+    }
+
+    public void selectVertex(UUID uuid, Vertex vertex) {
+        if(vertex == null) selectedVertex.remove(uuid);
+        else selectedVertex.put(uuid, vertex);
     }
 
     public boolean isAdminmode(Player player) {
@@ -133,6 +144,7 @@ public class WorldController {
             if (player == null) continue;
             setAdminmode(player, false);
         }
+        selectedVertex.clear();
         adminmodes.clear();
         adminmmodeBossbar.removeAll();
         getAllGraphs().forEach(FlightGraph::shutdown);
@@ -145,6 +157,7 @@ public class WorldController {
     }
 
     public void playerQuit(Player player) {
+        selectedVertex.remove(player.getUniqueId());
         setAdminmode(player, false);
     }
 }

@@ -40,12 +40,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerListener implements Listener {
-
-    Vertex lastCreated = null;
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
@@ -94,37 +94,70 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onClickMenu(PlayerInteractEvent e) {
         Player p = e.getPlayer();
-        if (e.getAction().equals(Action.LEFT_CLICK_BLOCK) || e.getAction().equals(Action.LEFT_CLICK_AIR)) {
-            if (!WorldController.get().isAdminmode(p)) return;
-            ItemStack itemInHand = p.getInventory().getItemInMainHand();
-            if (itemInHand.getItemMeta() == null) return;
+        if (!e.getAction().name().contains("CLICK")) return;
 
-            if (itemInHand.getItemMeta().getDisplayName().equals("§2§lCreate a point")) {
-                e.setCancelled(true);
+        if (!WorldController.get().isAdminmode(p)) return;
+        ItemStack itemInHand = p.getInventory().getItemInMainHand();
+        if (itemInHand.getItemMeta() == null) return;
 
-                FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());
-                Location location = p.getLocation();
-                float x = (float) location.getX();
-                float y = (float) location.getY();
-                float z = (float) location.getZ();
-                Optional<Vertex> closesVertex = graph.getClosesVertex(x, y, z, 5);
-                if (closesVertex.isPresent()) { // minimum 5 blocks distance
-                    p.sendMessage("§2§lFA §cYou are too close to a point");
-                    return;
-                }
-                int num = ThreadLocalRandom.current().nextInt(999999);
-                Vertex vertex = new Vertex("Vertex-" + num, x, y, z, true);
-                graph.getGraph().addVertex(vertex);
+        if (itemInHand.getItemMeta().getDisplayName().equals("§2§lCreate a point")) {
+            e.setCancelled(true);
 
-                if (lastCreated != null) {
-                    graph.getGraph().addEdge(vertex, lastCreated);
-                }
-                lastCreated = vertex;
-
-                graph.setupFlightMovers();
-                p.sendMessage("§2§lFA §aYou successfully created the point " + vertex.getName());
+            FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());
+            Location location = p.getLocation();
+            float x = (float) location.getX();
+            float y = (float) location.getY();
+            float z = (float) location.getZ();
+            Optional<Vertex> closesVertex = graph.getClosesVertex(x, y, z, 5);
+            if (closesVertex.isPresent()) { // minimum 5 blocks distance
+                p.sendMessage("§2§lFA §cYou are too close to a point");
                 return;
             }
+            int num = ThreadLocalRandom.current().nextInt(100000, 999999);
+            Vertex vertex = new Vertex("Vertex-" + num, x, y, z, true);
+            graph.getGraph().addVertex(vertex);
+
+            graph.setupFlightMovers();
+            p.sendMessage("§2§lFA §aYou successfully created the point " + vertex.getName());
+            return;
+        }
+
+        if (itemInHand.getItemMeta().getDisplayName().equals("§9§lConnect points")) {
+            e.setCancelled(true);
+
+            FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());
+            Location location = p.getLocation();
+            float x = (float) location.getX();
+            float y = (float) location.getY();
+            float z = (float) location.getZ();
+            Optional<Vertex> closesVertex = graph.getClosesVertex(x, y, z, 2);
+            if (!closesVertex.isPresent()) { // minimum 5 blocks distance
+                p.sendMessage("§2§lFA §cNo points nearby!");
+                return;
+            }
+
+            // first point with left
+            if(e.getAction().name().contains("LEFT")) {
+                WorldController.get().selectVertex(p.getUniqueId(), closesVertex.get());
+                p.sendMessage("§2§lFA §aYou selected the point " + closesVertex.get().getName());
+                return;
+            }
+
+            Optional<Vertex> selectedVertex = WorldController.get().getSelectedVertex(p.getUniqueId());
+            if(!selectedVertex.isPresent()) {
+                p.sendMessage("§2§lFA §cSelect a point with left-click first, then rightclick to connect to another point!");
+                return;
+            }
+
+            if(closesVertex.get().getName().equals(selectedVertex.get().getName())) {
+                p.sendMessage("§2§lFA §cYou cannot connect a point to itself!");
+                return;
+            }
+
+            graph.getGraph().addEdge(closesVertex.get(), selectedVertex.get());
+
+            graph.setupFlightMovers();
+            p.sendMessage("§2§lFA §aYou successfully connected the points " + selectedVertex.get().getName() + " and " + closesVertex.get().getName());
         }
     }
 }

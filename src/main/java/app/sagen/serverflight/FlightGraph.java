@@ -100,34 +100,32 @@ public class FlightGraph {
 
             Set<Vertex> drawnVertices = new HashSet<>();
             for(Map.Entry<Vertex, List<Vertex>> entry : graph.getAdjVertices().entrySet()) {
-                drawnVertices.add(entry.getKey());
+                Vertex from = entry.getKey();
+                drawnVertices.add(from);
                 o.spawnParticle(Particle.REDSTONE,
-                        (entry.getKey().getX() - 0.25f) + (Math.random() * 0.5f),
-                        (entry.getKey().getY() - 0.25f) + (Math.random() * 0.5f),
-                        (entry.getKey().getZ() - 0.25f) + (Math.random() * 0.5f),
+                        (from.getX() - 0.25f) + (Math.random() * 0.5f),
+                        (from.getY() - 0.25f) + (Math.random() * 0.5f),
+                        (from.getZ() - 0.25f) + (Math.random() * 0.5f),
                         0, new Particle.DustOptions(Color.fromBGR(1, 1, 255),
                                 ThreadLocalRandom.current().nextInt(5)));
 
                 // draw every edge
                 entry.getValue().stream().filter(v -> !drawnVertices.contains(v)).forEach((to) -> {
-
-                    float speed = 0.5f; // speed is 0.5 blocks per particle
-
-                    Vertex from = entry.getKey();
-
                     Vector vf = new Vector(from.getX(), from.getY(), from.getZ());
                     Vector vt = new Vector(to.getX(), to.getY(), to.getZ());
 
-                    Vector velocity = vt.subtract(vf);
-                    velocity.normalize().multiply(speed);
+                    Vector velocity = vt.clone().subtract(vf).normalize().multiply(1.5f);
 
-                    for(double d = vf.distance(vt); d >= 0; d -= speed) {
-                        vf.add(velocity);
+                    int iterations = (int)(vf.distance(vt) / velocity.length());
+
+                    for(int i = iterations; i >= 0; i--) {
                         o.spawnParticle(Particle.REDSTONE,
                                 vf.getX(), vf.getY(), vf.getZ(), 0,
-                                new Particle.DustOptions(Color.fromBGR(1, 1, 255),
-                                        ThreadLocalRandom.current().nextInt(5)));
+                                new Particle.DustOptions(Color.fromBGR(255, 1, 1), 1));
+                        vf = vf.add(velocity);
                     }
+
+                    System.out.println();
 
                 });
             }
