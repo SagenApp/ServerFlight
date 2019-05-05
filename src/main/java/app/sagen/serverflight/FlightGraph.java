@@ -26,11 +26,13 @@ package app.sagen.serverflight;
 import app.sagen.serverflight.util.Graph;
 import app.sagen.serverflight.util.Vertex;
 import lombok.Data;
+import org.bukkit.Bukkit;
+import org.bukkit.Color;
+import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Data
 public class FlightGraph {
@@ -90,6 +92,24 @@ public class FlightGraph {
     }
 
     public void updateParticles() {
+        // make points visible for admin mode players
+        for(Player o : Bukkit.getOnlinePlayers()) {
+            if(!o.getWorld().getName().equalsIgnoreCase(this.world)) continue;
+            if(!WorldController.get().isAdminmode(o)) continue;
+
+            for(Vertex v : graph.getAdjVertices().keySet()) {
+                for (int i = 0; i < 2; i++) {
+                    o.spawnParticle(Particle.REDSTONE,
+                            (v.getX() - 0.25f) + (Math.random() * 0.5f),
+                            (v.getY() - 0.25f) + (Math.random() * 0.5f),
+                            (v.getZ() - 0.25f) + (Math.random() * 0.5f),
+                            0, new Particle.DustOptions(Color.fromBGR(1, 1, 255),
+                                    ThreadLocalRandom.current().nextInt(5)));
+                }
+            }
+        }
+
+        // update particles for every path
         flightPaths.values().forEach(paths -> paths.forEach(FlightPath::updateParticles));
     }
 

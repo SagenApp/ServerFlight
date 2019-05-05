@@ -60,7 +60,6 @@ public class PlayerMover {
         currentPosition = flightPath.spline3D.getTripPosition(9000);
         Location location = getCurrentLocation();
 
-        // teleport now and later to be sure
         Bukkit.getScheduler().runTaskLater(ServerFlight.getInstance(), () -> {
             player.teleport(location);
             player = null;
@@ -84,6 +83,7 @@ public class PlayerMover {
                 .filter(p -> !((Player) p).getUniqueId().equals(player.getUniqueId()))
                 .collect(Collectors.toList());
 
+        // draw particles around players on path
         for(int i = 0; i < 5; i++) {
             float offsetForward = ThreadLocalRandom.current().nextFloat() * 6 + 1;
             float offsetBackward = ThreadLocalRandom.current().nextFloat() * 5 + 1;
