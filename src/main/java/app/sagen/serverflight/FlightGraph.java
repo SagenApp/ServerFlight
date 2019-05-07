@@ -82,8 +82,8 @@ public class FlightGraph {
 
         // only update vertices in set
         for (Vertex from : vertexSet) {
-                flightPaths.getOrDefault(from, new ArrayList<>()).forEach(FlightPath::shutdown); // shutdown old paths in network
-                flightPaths.remove(from);
+            flightPaths.getOrDefault(from, new ArrayList<>()).forEach(FlightPath::shutdown); // shutdown old paths in network
+            flightPaths.remove(from);
 
             if (!from.isTeleportable()) continue; // ignore non-teleportable
             List<FlightPath> paths = new ArrayList<>();

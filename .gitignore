@@ -90,7 +90,7 @@ modules.xml
 .idea/sonarlint
 
 ### Maven ###
-
+target/
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
