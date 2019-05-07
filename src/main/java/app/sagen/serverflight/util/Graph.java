@@ -36,10 +36,10 @@ import java.util.stream.Collectors;
 @ToString
 public class Graph {
     private String world;
-    private Map<Vertex, List<Vertex>> adjVertices = new HashMap<>();
+    private Map<Vertex, Set<Vertex>> adjVertices = new HashMap<>();
 
     public void addVertex(Vertex vertex) {
-        adjVertices.putIfAbsent(vertex, new ArrayList<>());
+        adjVertices.putIfAbsent(vertex, new HashSet<>());
     }
 
     public void removeVertex(Vertex vertex) {
@@ -53,15 +53,15 @@ public class Graph {
     }
 
     public void removeEdge(Vertex vertex1, Vertex vertex2) {
-        List<Vertex> eV1 = adjVertices.get(vertex1);
-        List<Vertex> eV2 = adjVertices.get(vertex2);
+        Set<Vertex> eV1 = adjVertices.get(vertex1);
+        Set<Vertex> eV2 = adjVertices.get(vertex2);
         if (eV1 != null)
             eV1.remove(vertex2);
         if (eV2 != null)
             eV2.remove(vertex1);
     }
 
-    public List<Vertex> getAdjVertices(Vertex vertex) {
+    public Set<Vertex> getAdjVertices(Vertex vertex) {
         return adjVertices.get(vertex);
     }
 

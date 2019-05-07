@@ -117,7 +117,6 @@ public class PlayerListener implements Listener {
             Vertex vertex = new Vertex("Vertex-" + num, x, y, z, true);
             graph.getGraph().addVertex(vertex);
 
-            graph.setupFlightMovers();
             p.sendMessage("§2§lFA §aYou successfully created the point " + vertex.getName());
             return;
         }
@@ -156,7 +155,7 @@ public class PlayerListener implements Listener {
 
             graph.getGraph().addEdge(closesVertex.get(), selectedVertex.get());
 
-            graph.setupFlightMovers();
+            graph.setupFlightMoversConnectedTo(closesVertex.get(), selectedVertex.get());
             p.sendMessage("§2§lFA §aYou connected the points " + selectedVertex.get().getName() + " and " + closesVertex.get().getName());
         }
 
@@ -194,12 +193,13 @@ public class PlayerListener implements Listener {
 
             graph.getGraph().removeEdge(closesVertex.get(), selectedVertex.get());
 
-            graph.setupFlightMovers();
+            graph.setupFlightMoversConnectedTo(closesVertex.get(), selectedVertex.get());
             p.sendMessage("§2§lFA §aYou disconnected the points " + selectedVertex.get().getName() + " and " + closesVertex.get().getName());
         }
 
         else if (itemInHand.getItemMeta().getDisplayName().equals("§a§lDisable interactive mode")) {
-            p.sendMessage("§2§lFA You are no longer in interactive mode");
+            e.setCancelled(true);
+            p.sendMessage("§2§lFA §aYou are no longer in interactive mode");
             WorldController.get().setAdminmode(p, false);
         }
 
@@ -219,7 +219,7 @@ public class PlayerListener implements Listener {
 
             graph.getGraph().removeVertex(closesVertex.get());
 
-            graph.setupFlightMovers();
+            graph.setupFlightMovers(); // recalculate the whole thing
             p.sendMessage("§2§lFA §aYou deleted the point " + closesVertex.get().getName());
         }
     }

@@ -70,8 +70,30 @@ public class FlightGraph {
         }
 
         // cleanup old and setup new
-        if (!flightMovers.isEmpty()) shutdown();
+        shutdown();
         this.flightPaths = flightMovers;
+    }
+
+    public void setupFlightMoversConnectedTo(Vertex...vertices) {
+        // calculate set of reachable vertices
+        Set<Vertex> vertexSet = new HashSet<>();
+        for(Vertex input : vertices) vertexSet.addAll(graph.allReachable(input));
+        vertexSet.addAll(Arrays.asList(vertices));
+
+        // only update vertices in set
+        for (Vertex from : vertexSet) {
+            flightPaths.getOrDefault(from, new ArrayList<>()).forEach(FlightPath::shutdown); // shutdown old paths in network
+            flightPaths.remove(from);
+
+            if (!from.isTeleportable()) continue; // ignore non-teleportable
+            List<FlightPath> paths = new ArrayList<>();
+            for (Vertex destination : graph.allReachable(from)) {
+                if (!destination.isTeleportable()) continue; // ignore non-teleportable
+                paths.add(new FlightPath(this, from, destination));
+            }
+
+            flightPaths.put(from, paths);
+        }
     }
 
     public Optional<Vertex> getClosesVertex(float x, float y, float z, float maxDistance) {
@@ -104,7 +126,7 @@ public class FlightGraph {
             if(!WorldController.get().isAdminmode(o)) continue;
 
             Set<Vertex> drawnVertices = new HashSet<>();
-            for(Map.Entry<Vertex, List<Vertex>> entry : graph.getAdjVertices().entrySet()) {
+            for(Map.Entry<Vertex, Set<Vertex>> entry : graph.getAdjVertices().entrySet()) {
                 Vertex from = entry.getKey();
                 drawnVertices.add(from);
                 o.spawnParticle(Particle.REDSTONE,
