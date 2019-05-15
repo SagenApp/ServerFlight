@@ -23,7 +23,6 @@
  */
 package app.sagen.serverflight.util;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -36,50 +35,48 @@ import java.util.stream.Collectors;
 @ToString
 public class Graph {
     private String world;
-    private Map<Vertex, Set<Vertex>> adjVertices = new HashMap<>();
+    private Map<Vertex, Set<Vertex>> vertexMap = new HashMap<>();
 
     public void addVertex(Vertex vertex) {
-        adjVertices.putIfAbsent(vertex, new HashSet<>());
+        vertexMap.putIfAbsent(vertex, new HashSet<>());
     }
 
     public void removeVertex(Vertex vertex) {
-        adjVertices.values().forEach(e -> e.remove(vertex));
-        adjVertices.remove(vertex);
+        vertexMap.values().forEach(e -> e.remove(vertex));
+        vertexMap.remove(vertex);
     }
 
     public void addEdge(Vertex vertex1, Vertex vertex2) {
-        adjVertices.get(vertex1).add(vertex2);
-        adjVertices.get(vertex2).add(vertex1);
+        vertexMap.get(vertex1).add(vertex2);
+        vertexMap.get(vertex2).add(vertex1);
     }
 
     public void removeEdge(Vertex vertex1, Vertex vertex2) {
-        Set<Vertex> eV1 = adjVertices.get(vertex1);
-        Set<Vertex> eV2 = adjVertices.get(vertex2);
+        Set<Vertex> eV1 = vertexMap.get(vertex1);
+        Set<Vertex> eV2 = vertexMap.get(vertex2);
         if (eV1 != null)
             eV1.remove(vertex2);
         if (eV2 != null)
             eV2.remove(vertex1);
     }
 
-    public Set<Vertex> getAdjVertices(Vertex vertex) {
-        return adjVertices.get(vertex);
+    public Set<Vertex> getNeighborsOf(Vertex vertex) {
+        return vertexMap.get(vertex);
+    }
+
+    public Set<Vertex> getAllVertices() {
+        return vertexMap.keySet();
     }
 
     public Optional<Vertex> getByName(String name) {
-        return adjVertices.keySet().stream()
+        return vertexMap.keySet().stream()
                 .filter(v -> v.name.equalsIgnoreCase(name))
                 .findFirst();
     }
 
-    public Optional<Vertex> getByLocation(float x, float y, float z) {
-        return adjVertices.keySet().stream()
-                .filter(v -> v.x == x && v.y == y && v.z == z)
-                .findFirst();
-    }
-
-    public Set<Vertex> allReachable(Vertex vertex) {
+    public Set<Vertex> allReachableFrom(Vertex vertex) {
         Set<Vertex> reachable = new HashSet<>();
-        allReachable(reachable, vertex);
+        allReachableFrom(reachable, vertex);
         reachable.remove(vertex);
         return reachable;
     }
@@ -92,7 +89,7 @@ public class Graph {
 
         Set<Vertex> Q = new HashSet<>();
 
-        for (Vertex v : adjVertices.keySet()) {
+        for (Vertex v : vertexMap.keySet()) {
             prev.put(v, null);
             dist.put(v, Float.MAX_VALUE);
             Q.add(v);
@@ -120,7 +117,7 @@ public class Graph {
                 }
             }
 
-            for (Vertex v : adjVertices.get(u).stream()
+            for (Vertex v : vertexMap.get(u).stream()
                     .filter(Q::contains)
                     .collect(Collectors.toSet())) {
                 float alt = dist.get(u) + u.heristic(v);
@@ -134,20 +131,12 @@ public class Graph {
         return Optional.empty();
     }
 
-    private void allReachable(Set<Vertex> vertices, Vertex vertex) {
-        for (Vertex neighbor : adjVertices.get(vertex)) {
+    private void allReachableFrom(Set<Vertex> vertices, Vertex vertex) {
+        for (Vertex neighbor : vertexMap.get(vertex)) {
             if (!vertices.contains(neighbor)) {
                 vertices.add(neighbor);
-                allReachable(vertices, neighbor);
+                allReachableFrom(vertices, neighbor);
             }
         }
-    }
-
-    private <T> LinkedList<T> reverse(LinkedList<T> list) {
-        LinkedList<T> revLinkedList = new LinkedList<>();
-        for (int i = list.size() - 1; i >= 0; i--) {
-            revLinkedList.add(list.get(i));
-        }
-        return revLinkedList;
     }
 }

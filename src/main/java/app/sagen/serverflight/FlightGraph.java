@@ -25,7 +25,6 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Graph;
 import app.sagen.serverflight.util.Vertex;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -59,10 +58,10 @@ public class FlightGraph {
     public void setupFlightMovers() {
         // calculate new FlightPats
         HashMap<Vertex, List<FlightPath>> flightMovers = new HashMap<>();
-        for (Vertex from : graph.getAdjVertices().keySet()) {
+        for (Vertex from : graph.getVertexMap().keySet()) {
             if (!from.isTeleportable()) continue; // ignore non-teleportable
             List<FlightPath> paths = new ArrayList<>();
-            for (Vertex destination : graph.allReachable(from)) {
+            for (Vertex destination : graph.allReachableFrom(from)) {
                 if (!destination.isTeleportable()) continue; // ignore non-teleportable
                 paths.add(new FlightPath(this, from, destination));
             }
@@ -74,10 +73,10 @@ public class FlightGraph {
         this.flightPaths = flightMovers;
     }
 
-    public void setupFlightMoversConnectedTo(Vertex...vertices) {
+    public void setupFlightMoversConnectedTo(Vertex... vertices) {
         // calculate set of reachable vertices
         Set<Vertex> vertexSet = new HashSet<>();
-        for(Vertex input : vertices) vertexSet.addAll(graph.allReachable(input));
+        for (Vertex input : vertices) vertexSet.addAll(graph.allReachableFrom(input));
         vertexSet.addAll(Arrays.asList(vertices));
 
         // only update vertices in set
@@ -87,7 +86,7 @@ public class FlightGraph {
 
             if (!from.isTeleportable()) continue; // ignore non-teleportable
             List<FlightPath> paths = new ArrayList<>();
-            for (Vertex destination : graph.allReachable(from)) {
+            for (Vertex destination : graph.allReachableFrom(from)) {
                 if (!destination.isTeleportable()) continue; // ignore non-teleportable
                 paths.add(new FlightPath(this, from, destination));
             }
@@ -99,7 +98,7 @@ public class FlightGraph {
     public Optional<Vertex> getClosesVertex(float x, float y, float z, float maxDistance) {
         Vertex closest = null;
         float heuristics = Float.MAX_VALUE;
-        for (Vertex vertex : graph.getAdjVertices().keySet()) {
+        for (Vertex vertex : graph.getVertexMap().keySet()) {
             if (closest == null) closest = vertex;
             float calculatedHeuristics = vertex.heristic(x, y, z);
             if (calculatedHeuristics < heuristics) {
@@ -121,12 +120,12 @@ public class FlightGraph {
 
     public void updateParticles() {
         // make points visible for admin mode players
-        for(Player o : Bukkit.getOnlinePlayers()) {
-            if(!o.getWorld().getName().equalsIgnoreCase(this.world)) continue;
-            if(!WorldController.get().isAdminmode(o)) continue;
+        for (Player o : Bukkit.getOnlinePlayers()) {
+            if (!o.getWorld().getName().equalsIgnoreCase(this.world)) continue;
+            if (!WorldController.get().isAdminmode(o)) continue;
 
             Set<Vertex> drawnVertices = new HashSet<>();
-            for(Map.Entry<Vertex, Set<Vertex>> entry : graph.getAdjVertices().entrySet()) {
+            for (Map.Entry<Vertex, Set<Vertex>> entry : graph.getVertexMap().entrySet()) {
                 Vertex from = entry.getKey();
                 drawnVertices.add(from);
                 o.spawnParticle(Particle.REDSTONE,
@@ -143,9 +142,9 @@ public class FlightGraph {
 
                     Vector velocity = vt.clone().subtract(vf).normalize().multiply(1.5f);
 
-                    int iterations = (int)(vf.distance(vt) / velocity.length());
+                    int iterations = (int) (vf.distance(vt) / velocity.length());
 
-                    for(int i = iterations; i >= 0; i--) {
+                    for (int i = iterations; i >= 0; i--) {
                         o.spawnParticle(Particle.REDSTONE,
                                 vf.getX(), vf.getY(), vf.getZ(), 0,
                                 new Particle.DustOptions(Color.fromBGR(255, 1, 1), 1));

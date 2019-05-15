@@ -37,7 +37,7 @@ public class InventoryListener implements Listener {
         AbstractMenu menu = AbstractMenu.checkForMenuClick(ServerFlight.getInstance(), e, true);
 
         // always close and cleanup
-        if(menu != null) {
+        if (menu != null) {
             menu.ecivtViewers();
             AbstractMenu.menus.remove(menu);
         }
@@ -48,7 +48,7 @@ public class InventoryListener implements Listener {
         AbstractMenu menu = AbstractMenu.checkForMenuClose(ServerFlight.getInstance(), e);
 
         // cleanup
-        if(menu != null) {
+        if (menu != null) {
             //menu.ecivtViewers();
             AbstractMenu.menus.remove(menu);
         }

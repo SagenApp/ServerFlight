@@ -24,7 +24,6 @@
 package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.VirtualVehicle;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -84,19 +83,19 @@ public class PlayerMover {
         double distanceSquared = Math.pow(25, 2);
         Location location = getCurrentLocation();
         List<Player> playersInArea = Bukkit.getOnlinePlayers().stream()
-                .filter(p -> ((Player) p).getLocation().distanceSquared(location) < distanceSquared)
-                .filter(p -> !((Player) p).getUniqueId().equals(player.getUniqueId()))
+                .filter(p -> p.getLocation().distanceSquared(location) < distanceSquared)
+                .filter(p -> !p.getUniqueId().equals(player.getUniqueId()))
                 .collect(Collectors.toList());
 
         // draw particles around players on path
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             float offsetForward = ThreadLocalRandom.current().nextFloat() * 6 + 1;
             float offsetBackward = ThreadLocalRandom.current().nextFloat() * 5 + 1;
 
             float[] posForward = flightPath.getSpline3D().getTripPosition(distanceTraveled + offsetForward);
             float[] posBackward = flightPath.getSpline3D().getTripPosition(distanceTraveled - offsetBackward);
 
-            for(Player nearby : playersInArea) {
+            for (Player nearby : playersInArea) {
                 nearby.spawnParticle(Particle.REDSTONE,
                         (posForward[0] - 0.25f) + (Math.random() * 0.5f),
                         (posForward[1] - 0.25f) + (Math.random() * 0.5f),

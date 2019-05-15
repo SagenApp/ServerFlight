@@ -44,6 +44,7 @@ public class WorldController {
     private Map<UUID, ItemStack[]> adminmodes = new ConcurrentHashMap<>();
     private Map<UUID, Vertex> selectedVertex = new HashMap<>();
     private BossBar adminmmodeBossbar;
+
     public WorldController() {
         adminmmodeBossbar = Bukkit.createBossBar("§2§lFlight Admin §7- interactive mode enabled", BarColor.GREEN, BarStyle.SOLID);
     }
@@ -58,7 +59,7 @@ public class WorldController {
     }
 
     public void selectVertex(UUID uuid, Vertex vertex) {
-        if(vertex == null) selectedVertex.remove(uuid);
+        if (vertex == null) selectedVertex.remove(uuid);
         else selectedVertex.put(uuid, vertex);
     }
 

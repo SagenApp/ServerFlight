@@ -30,7 +30,6 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
@@ -40,9 +39,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class PlayerListener implements Listener {
@@ -119,9 +116,7 @@ public class PlayerListener implements Listener {
 
             p.sendMessage("§2§lFA §aYou successfully created the point " + vertex.getName());
             return;
-        }
-
-        else if (itemInHand.getItemMeta().getDisplayName().equals("§9§lConnect points")) {
+        } else if (itemInHand.getItemMeta().getDisplayName().equals("§9§lConnect points")) {
             e.setCancelled(true);
 
             FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());
@@ -136,19 +131,19 @@ public class PlayerListener implements Listener {
             }
 
             // first point with left
-            if(e.getAction().name().contains("LEFT")) {
+            if (e.getAction().name().contains("LEFT")) {
                 WorldController.get().selectVertex(p.getUniqueId(), closesVertex.get());
                 p.sendMessage("§2§lFA §aYou selected the point " + closesVertex.get().getName());
                 return;
             }
 
             Optional<Vertex> selectedVertex = WorldController.get().getSelectedVertex(p.getUniqueId());
-            if(!selectedVertex.isPresent()) {
+            if (!selectedVertex.isPresent()) {
                 p.sendMessage("§2§lFA §cSelect a point with left-click first, then rightclick to connect to another point!");
                 return;
             }
 
-            if(closesVertex.get().getName().equals(selectedVertex.get().getName())) {
+            if (closesVertex.get().getName().equals(selectedVertex.get().getName())) {
                 p.sendMessage("§2§lFA §cYou cannot connect a point to itself!");
                 return;
             }
@@ -157,9 +152,7 @@ public class PlayerListener implements Listener {
 
             graph.setupFlightMoversConnectedTo(closesVertex.get(), selectedVertex.get());
             p.sendMessage("§2§lFA §aYou connected the points " + selectedVertex.get().getName() + " and " + closesVertex.get().getName());
-        }
-
-        else if (itemInHand.getItemMeta().getDisplayName().equals("§c§lDisconnect points")) {
+        } else if (itemInHand.getItemMeta().getDisplayName().equals("§c§lDisconnect points")) {
             e.setCancelled(true);
 
             FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());
@@ -174,19 +167,19 @@ public class PlayerListener implements Listener {
             }
 
             // first point with left
-            if(e.getAction().name().contains("LEFT")) {
+            if (e.getAction().name().contains("LEFT")) {
                 WorldController.get().selectVertex(p.getUniqueId(), closesVertex.get());
                 p.sendMessage("§2§lFA §aYou selected the point " + closesVertex.get().getName());
                 return;
             }
 
             Optional<Vertex> selectedVertex = WorldController.get().getSelectedVertex(p.getUniqueId());
-            if(!selectedVertex.isPresent()) {
+            if (!selectedVertex.isPresent()) {
                 p.sendMessage("§2§lFA §cSelect a point with left-click first, then rightclick to disconnect from another point!");
                 return;
             }
 
-            if(closesVertex.get().getName().equals(selectedVertex.get().getName())) {
+            if (closesVertex.get().getName().equals(selectedVertex.get().getName())) {
                 p.sendMessage("§2§lFA §cYou cannot connect/disconnect a point to itself!");
                 return;
             }
@@ -195,15 +188,11 @@ public class PlayerListener implements Listener {
 
             graph.setupFlightMoversConnectedTo(closesVertex.get(), selectedVertex.get());
             p.sendMessage("§2§lFA §aYou disconnected the points " + selectedVertex.get().getName() + " and " + closesVertex.get().getName());
-        }
-
-        else if (itemInHand.getItemMeta().getDisplayName().equals("§a§lDisable interactive mode")) {
+        } else if (itemInHand.getItemMeta().getDisplayName().equals("§a§lDisable interactive mode")) {
             e.setCancelled(true);
             p.sendMessage("§2§lFA §aYou are no longer in interactive mode");
             WorldController.get().setAdminmode(p, false);
-        }
-
-        else if (itemInHand.getItemMeta().getDisplayName().equals("§c§lDelete a point")) {
+        } else if (itemInHand.getItemMeta().getDisplayName().equals("§c§lDelete a point")) {
             e.setCancelled(true);
 
             FlightGraph graph = WorldController.get().getGraphInWorld(p.getWorld().getName());

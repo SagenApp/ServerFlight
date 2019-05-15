@@ -25,7 +25,6 @@ package app.sagen.serverflight;
 
 import app.sagen.serverflight.util.Spline3D;
 import app.sagen.serverflight.util.Vertex;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -51,7 +50,6 @@ public class FlightPath {
             Color.fromBGR(1, 255, 255),
             Color.fromBGR(1, 1, 1)
     };
-
     Color color = cleanColors[ThreadLocalRandom.current().nextInt(cleanColors.length)];
 
     FlightGraph flightGraph;
